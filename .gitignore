@@ -1,0 +1,5 @@
+data/raw/
+__pycache__/
+*.pyc
+results/*_smoke*
+.venv/
