@@ -54,6 +54,22 @@ def run_one(seed: int, kind: str, rounds: int, decay):
                 "rollbacks": getattr(ag, "rollbacks", 0),
             })
         world.advance()
+    # 진화 판단의 정오(세계 정답으로 채점): 폐기한 문항이 실제 신호 문항이었나, 승격한 새 문항이 실제 신호였나
+    audit = {}
+    for seg, ag in agents.items():
+        for it in ag.bank.items.values():          # 마지막 회차에 막 만든 후보도 채점할 수 있게 등록
+            if it.theme and (seg, it.qid) not in registered:
+                world.register_question(seg, it.qid, it.theme)
+                registered.add((seg, it.qid))
+        kills = [e.qid for e in ag.bank.ledger if e.op == "kill"]
+        proms = [e.qid for e in ag.bank.ledger if e.op == "promote"]
+        cands = [e.qid for e in ag.bank.ledger if e.op == "add_candidate"]
+        audit[seg] = {
+            "kills": len(kills), "kills_informative": sum(world.truth_informative(seg, q) for q in kills),
+            "promotes": len(proms), "promotes_informative": sum(world.truth_informative(seg, q) for q in proms),
+            "candidates": len(cands), "candidates_informative": sum(world.truth_informative(seg, q) for q in cands),
+        }
+    recs[-1]["audit"] = audit
     return recs, agents
 
 
@@ -107,6 +123,8 @@ def summarize(runs):
                                        for t in range(R)] for h in HIDDEN[seg]},
             }
     out["per_round"] = per_round
+    aud = [r["audit"] for r in runs if r["kind"] == "qloop" and "audit" in r]
+    out["evolution_audit"] = {seg: {k: int(sum(a[seg][k] for a in aud)) for k in aud[0][seg]} for seg in BUDGET}
     out["rollbacks_total"] = int(sum(max(r["rollbacks"] for r in runs if r["kind"] == "qloop" and r["seed"] == s and r["seg"] == seg)
                                    for s in seeds for seg in BUDGET))
     return out

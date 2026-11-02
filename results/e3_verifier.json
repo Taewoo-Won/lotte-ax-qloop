@@ -1,0 +1,28 @@
+{
+ "original_claims": 390,
+ "original_passed": 390,
+ "perturbed": {
+  "shift": {
+   "made": 389,
+   "blocked": 389
+  },
+  "sign": {
+   "made": 239,
+   "blocked": 239
+  },
+  "digit": {
+   "made": 390,
+   "blocked": 390
+  },
+  "evidence": {
+   "made": 120,
+   "blocked": 120
+  },
+  "extra": {
+   "made": 390,
+   "blocked": 390
+  }
+ },
+ "perturbed_total": 1528,
+ "perturbed_blocked": 1528
+}
