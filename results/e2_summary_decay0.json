@@ -39,6 +39,20 @@
    "b2c_instax": 0.27830543200256264
   }
  },
+ "segment_paired": {
+  "b2b_photo": {
+   "qloop_minus_fixed": 0.04621609990090169,
+   "wins": 19
+  },
+  "b2b_industrial": {
+   "qloop_minus_fixed": 0.012793114267761219,
+   "wins": 12
+  },
+  "b2c_instax": {
+   "qloop_minus_fixed": 0.02734584696644852,
+   "wins": 20
+  }
+ },
  "paired_diff": {
   "qloop_minus_fixed": {
    "mean": 0.027849640277711373,
@@ -590,11 +604,38 @@
    }
   }
  },
+ "evolution_audit": {
+  "b2b_photo": {
+   "kills": 49,
+   "kills_informative": 12,
+   "promotes": 23,
+   "promotes_informative": 20,
+   "candidates": 56,
+   "candidates_informative": 21
+  },
+  "b2b_industrial": {
+   "kills": 80,
+   "kills_informative": 26,
+   "promotes": 13,
+   "promotes_informative": 10,
+   "candidates": 88,
+   "candidates_informative": 30
+  },
+  "b2c_instax": {
+   "kills": 21,
+   "kills_informative": 1,
+   "promotes": 42,
+   "promotes_informative": 39,
+   "candidates": 41,
+   "candidates_informative": 40
+  }
+ },
  "rollbacks_total": 4,
  "config": {
   "seeds": 20,
   "rounds": 8,
   "length_decay_override": 0.0,
-  "seconds": 28.1
+  "constrained": false,
+  "seconds": 25.1
  }
 }

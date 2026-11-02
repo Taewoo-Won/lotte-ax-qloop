@@ -14,7 +14,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from experiments.e2_sim_loop import run_one          # noqa: E402
-from qloop.report import build_tables, build_claims, plan_markdown   # noqa: E402
+from qloop.report import build_tables, build_claims, plan_markdown, EVIDENCE_T   # noqa: E402
 from qloop.verifier import verify, NUM               # noqa: E402
 
 
@@ -65,11 +65,23 @@ def main():
     rng = np.random.default_rng(7)
     originals, results = [], {k: {"made": 0, "blocked": 0} for k in ["shift", "sign", "digit", "evidence", "extra"]}
     sample_md = None
-    for seed in range(10):
-        recs, agents = run_one(seed, "qloop", 8, None)
+    ev = {}                      # 근거 문항 정확도: 보여 준 근거 문항이 그 액션이 듣는 니즈를 재는 문항인가(세계 정답으로 채점)
+    for seed in range(20):
+        recs, agents, world = run_one(seed, "qloop", 8, None, return_world=True)
         for seg, ag in agents.items():
             rd = ag.history[-1]
             T = build_tables(ag, rd)
+            need_of_action = {a.key: a.need for a in world.seg[seg].spec.actions}
+            for a in ag.actions:
+                q = T[f"top_q[{a}]"]
+                hit = world.truth_need_of(seg, q) == need_of_action[a]
+                big = abs(T[f"delta_t[{a},{q}]"]) >= EVIDENCE_T
+                d = ev.setdefault(seg, {"all": [0, 0], "shown": [0, 0]})
+                d["all"][0] += hit; d["all"][1] += 1
+                if big:
+                    d["shown"][0] += hit; d["shown"][1] += 1
+            if seed >= 10:
+                continue
             claims = build_claims(ag, rd, T)
             bank_texts = [i.text for i in ag.bank.items.values()]
             for c in claims:
@@ -87,6 +99,9 @@ def main():
                 sample_md = (sample_md or "# 예시 액션플랜 (시드 0, 마지막 회차, 템플릿 문장 + 검증 통과분)\n\n") + \
                     plan_markdown(ag, rd, passed) + "\n\n"
     out = {
+        "evidence_accuracy": {seg: {"all_top": f"{v['all'][0]}/{v['all'][1]}", "shown_t>=3": f"{v['shown'][0]}/{v['shown'][1]}"}
+                              for seg, v in ev.items()},
+        "evidence_seeds": 20, "verifier_seeds": 10,
         "original_claims": len(originals), "original_passed": int(sum(originals)),
         "perturbed": results,
         "perturbed_total": int(sum(v["made"] for v in results.values())),

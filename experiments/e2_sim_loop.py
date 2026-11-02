@@ -21,10 +21,10 @@ HIDDEN = {"b2b_photo": ["stock"], "b2b_industrial": ["leadtime"], "b2c_instax": 
 KINDS = ["static", "fixed", "qloop"]
 
 
-def run_one(seed: int, kind: str, rounds: int, decay):
+def run_one(seed: int, kind: str, rounds: int, decay, constrained: bool = False, return_world: bool = False):
     world = World(seed, length_decay_override=decay)
     cat = world.public_catalog()
-    agents = {seg: make_agent(kind, seg, cat[seg], seed, si, BUDGET[seg]) for si, seg in enumerate(cat)}
+    agents = {seg: make_agent(kind, seg, cat[seg], seed, si, BUDGET[seg], constrained) for si, seg in enumerate(cat)}
     for seg, ag in agents.items():
         ag.set_initial_sales(world.erp_last_sales(seg))
     registered: set[tuple[str, str]] = set()
@@ -70,6 +70,8 @@ def run_one(seed: int, kind: str, rounds: int, decay):
             "candidates": len(cands), "candidates_informative": sum(world.truth_informative(seg, q) for q in cands),
         }
     recs[-1]["audit"] = audit
+    if return_world:
+        return recs, agents, world
     return recs, agents
 
 
@@ -97,6 +99,9 @@ def summarize(runs):
 
     out["capture_total"] = {k: {"mean": float(np.mean(v)), "ci95": boot(v)} for k, v in cap.items()}
     out["capture_by_segment"] = {k: {seg: float(np.mean(v)) for seg, v in d.items()} for k, d in capseg.items()}
+    out["segment_paired"] = {seg: {"qloop_minus_fixed": float(np.mean(np.subtract(capseg["qloop"][seg], capseg["fixed"][seg]))),
+                                   "wins": int(np.sum(np.subtract(capseg["qloop"][seg], capseg["fixed"][seg]) > 0))}
+                             for seg in BUDGET}
     out["paired_diff"] = {
         "qloop_minus_fixed": {"mean": float(np.mean(np.subtract(cap["qloop"], cap["fixed"]))),
                               "ci95": boot(np.subtract(cap["qloop"], cap["fixed"])),
@@ -149,18 +154,19 @@ def main():
     ap.add_argument("--rounds", type=int, default=8)
     ap.add_argument("--decay", default="none")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--constrained", action="store_true", help="현업 제약: B2B 거래조건 추첨 금지, 첫 분기 전원 추첨 안 함")
     a = ap.parse_args()
     decay = None if a.decay == "none" else float(a.decay)
     t0 = time.time()
     runs = []
     for s in range(a.seeds):
         for k in KINDS:
-            recs, agents = run_one(s, k, a.rounds, decay)
+            recs, agents = run_one(s, k, a.rounds, decay, constrained=a.constrained)
             runs.extend(recs)
             if s == 0 and k == "qloop":
                 dump_bank(agents, ROOT / f"results/e2_bank_seed0{a.tag}.json")
     summ = summarize(runs)
-    summ["config"] = {"seeds": a.seeds, "rounds": a.rounds, "length_decay_override": decay,
+    summ["config"] = {"seeds": a.seeds, "rounds": a.rounds, "length_decay_override": decay, "constrained": a.constrained,
                       "seconds": round(time.time() - t0, 1)}
     (ROOT / f"results/e2_runs{a.tag}.json").write_text(json.dumps(runs, ensure_ascii=False))
     (ROOT / f"results/e2_summary{a.tag}.json").write_text(json.dumps(summ, ensure_ascii=False, indent=1))

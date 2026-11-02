@@ -100,6 +100,11 @@ def build(ctx: QLoopContext):
         """설문을 발송한다. 사람 승인 없이는 실행되지 않는다."""
         return f"{segment} 설문 발송 요청 접수(데모: 실제 발송 없음)"
 
+    @function_tool(needs_approval=True)
+    def publish_plan(w: RunContextWrapper[QLoopContext], segment: str) -> str:
+        """검증을 통과한 액션플랜을 영업·마케팅에 배포한다. 사람 승인 없이는 실행되지 않는다."""
+        return f"{segment} 액션플랜 배포 요청 접수(데모: 실제 배포 없음)"
+
     @output_guardrail
     def numbers_must_match(w: RunContextWrapper[QLoopContext], agent, output: PlanReport) -> GuardrailFunctionOutput:
         ok, bad = check_report(w.context, output)
@@ -114,7 +119,7 @@ def build(ctx: QLoopContext):
             "bank_changes 로 다음 설문이 왜 바뀌는지 근거를 설명하고, next_survey 로 초안을 확인한다. "
             "설문 발송은 send_survey 로 요청하되 사람 승인을 기다린다. 출력은 PlanReport 형식."
         ),
-        tools=[round_tables, bank_changes, next_survey, send_survey],
+        tools=[round_tables, bank_changes, next_survey, send_survey, publish_plan],
         output_type=PlanReport,
         output_guardrails=[numbers_must_match],
     )

@@ -113,13 +113,14 @@ def fit_interaction(history: list[RoundData], actions: list[str], qids: list[str
                n_rows=len(g), n_resp_rows=n_resp_rows, asked_rounds=asked)
 
 
-def ips_gain(rd: RoundData, policy_choice: list[str | None], actions: list[str], cost: dict[str, float]):
+def ips_gain(rd: RoundData, policy_choice: list[str | None], actions: list[str], cost: dict[str, float],
+             n_menu: int | None = None):
     """무작위 배정 고객만으로 '정책이 고른 액션을 했다면' 대비 '아무것도 안 했다면'의 순이익 차이를 추정(IPS).
     반환: (추정치, 표준오차, 표본 수). 롤백 판단에 쓴다."""
     idx = np.flatnonzero(rd.randomized)
     if len(idx) < 10:
         return 0.0, float("inf"), len(idx)
-    p = 1.0 / (len(actions) + 1)
+    p = 1.0 / (n_menu or (len(actions) + 1))
     contrib = []
     for i in idx:
         d = rd.sales[i] - rd.ref[i]

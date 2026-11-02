@@ -39,6 +39,20 @@
    "b2c_instax": 0.2736404341829847
   }
  },
+ "segment_paired": {
+  "b2b_photo": {
+   "qloop_minus_fixed": 0.056042147289008026,
+   "wins": 19
+  },
+  "b2b_industrial": {
+   "qloop_minus_fixed": 0.016648870537029632,
+   "wins": 13
+  },
+  "b2c_instax": {
+   "qloop_minus_fixed": 0.028701808518768107,
+   "wins": 20
+  }
+ },
  "paired_diff": {
   "qloop_minus_fixed": {
    "mean": 0.02968116707849756,
@@ -621,6 +635,7 @@
   "seeds": 20,
   "rounds": 8,
   "length_decay_override": null,
-  "seconds": 27.4
+  "constrained": false,
+  "seconds": 22.7
  }
 }

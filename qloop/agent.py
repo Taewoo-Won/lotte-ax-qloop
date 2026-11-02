@@ -41,6 +41,8 @@ class Config:
     corr_t: float = 0.7              # 중복 문항 판정
     retest_after: int = 4            # 폐기된 누적 문항을 이 회차 뒤 한 번 재시험(시장 변화 대비)
     window: int = 3                  # 학습에 쓰는 최근 회차 수
+    pilot_full_random: bool = True   # 첫 분기 전원 무작위(False 면 기존 배정 유지 + rand_share 만 추첨)
+    no_random: frozenset = frozenset()   # 추첨하지 않는 액션(예: 리베이트·단가 같은 거래조건)
 
     def __post_init__(self):
         if self.rand_share < IMMUTABLE["min_random_share"]:
@@ -147,8 +149,10 @@ class QLoopAgent(_Base):
     def assign(self, rnd, resp, answers, qids):
         n = self.n
         pilot = self.fit is None
-        randomized = np.ones(n, bool) if pilot else (self.rng.random(n) < self.cfg.rand_share)
-        menu = self.actions + [None]
+        full = pilot and self.cfg.pilot_full_random
+        randomized = np.ones(n, bool) if full else (self.rng.random(n) < self.cfg.rand_share)
+        menu = [a for a in self.actions if a not in self.cfg.no_random] + [None]
+        self.menu_size = len(menu)
         rand_pick = [menu[k] for k in self.rng.integers(len(menu), size=n)]
         policy: list[str | None] = [None] * n
         if not pilot:
@@ -178,7 +182,7 @@ class QLoopAgent(_Base):
                 self.bank.items[q].values.append((rd.round, v))
         gain = None
         if prev_fit is not None and self.last_policy_choice is not None:
-            gain = ips_gain(rd, self.last_policy_choice, self.actions, self.cost)
+            gain = ips_gain(rd, self.last_policy_choice, self.actions, self.cost, n_menu=getattr(self, "menu_size", None))
         if self.cfg.evolve:
             self._evolve(rd, gain)
         self._update_ref(rd.sales)
@@ -289,12 +293,19 @@ class QLoopAgent(_Base):
             added += 1
 
 
-def make_agent(kind: str, seg_key: str, cat: dict, seed: int, seg_index: int, budget: int):
+# 현업 제약 버전: B2B 는 거래조건(리베이트·연간 단가)을 추첨하지 않고, 첫 분기도 기존 배정 + 15% 추첨만
+TERMS = frozenset({"rebate", "annual_contract"})
+
+
+def make_agent(kind: str, seg_key: str, cat: dict, seed: int, seg_index: int, budget: int, constrained: bool = False):
     anchors = {cat["legacy"][0]["qid"]}           # 각 세그먼트 첫 문항(전반 만족)을 시계열 앵커로 고정
+    extra = {}
+    if constrained:
+        extra = {"pilot_full_random": False, "no_random": TERMS if seg_key.startswith("b2b") else frozenset()}
     if kind == "static":
         return StaticAgent(seg_key, cat, seed, seg_index, anchors)
     if kind == "fixed":
-        return QLoopAgent(seg_key, cat, seed, seg_index, anchors, Config(budget=budget, evolve=False))
+        return QLoopAgent(seg_key, cat, seed, seg_index, anchors, Config(budget=budget, evolve=False, **extra))
     if kind == "qloop":
-        return QLoopAgent(seg_key, cat, seed, seg_index, anchors, Config(budget=budget, evolve=True))
+        return QLoopAgent(seg_key, cat, seed, seg_index, anchors, Config(budget=budget, evolve=True, **extra))
     raise ValueError(kind)

@@ -1,28 +1,44 @@
 {
+ "evidence_accuracy": {
+  "b2b_photo": {
+   "all_top": "26/80",
+   "shown_t>=3": "7/7"
+  },
+  "b2b_industrial": {
+   "all_top": "19/60",
+   "shown_t>=3": "3/4"
+  },
+  "b2c_instax": {
+   "all_top": "84/100",
+   "shown_t>=3": "70/71"
+  }
+ },
+ "evidence_seeds": 20,
+ "verifier_seeds": 10,
  "original_claims": 390,
  "original_passed": 390,
  "perturbed": {
   "shift": {
-   "made": 389,
-   "blocked": 389
+   "made": 306,
+   "blocked": 306
   },
   "sign": {
-   "made": 239,
-   "blocked": 239
+   "made": 156,
+   "blocked": 156
   },
   "digit": {
-   "made": 390,
-   "blocked": 390
+   "made": 307,
+   "blocked": 307
   },
   "evidence": {
-   "made": 120,
-   "blocked": 120
+   "made": 37,
+   "blocked": 37
   },
   "extra": {
    "made": 390,
    "blocked": 390
   }
  },
- "perturbed_total": 1528,
- "perturbed_blocked": 1528
+ "perturbed_total": 1196,
+ "perturbed_blocked": 1196
 }

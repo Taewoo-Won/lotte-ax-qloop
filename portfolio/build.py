@@ -13,6 +13,7 @@ R = ROOT / "results"
 E2 = json.loads((R / "e2_summary.json").read_text())
 E2D = json.loads((R / "e2_summary_decay0.json").read_text())
 E1 = json.loads((R / "e1_real_survey.json").read_text())
+E2C = json.loads((R / "e2_summary_constrained.json").read_text())
 E3 = json.loads((R / "e3_verifier.json").read_text())
 BANK = json.loads((R / "e2_bank_seed0.json").read_text())
 
@@ -94,7 +95,8 @@ def fig_e1():
         d = E1[sg]
         ox = L + j * colw
         sx = lambda v, ox=ox: ox + 10 + (colw - 40) * (v - lo) / (hi - lo)
-        out.append(f'<text x="{ox+10}" y="14" font-size="11" fill="{INK}" font-weight="700">{e(d["label"])} · {d["k"]}문항</text>')
+        lab = "출장 고객" if sg.startswith("Business") else "개인 여행 고객"
+        out.append(f'<text x="{ox+10}" y="14" font-size="11" fill="{INK}" font-weight="700">{lab} · Q-Loop {d["k"]}문항</text>')
         for g in [0.75, 0.80, 0.85, 0.90]:
             out.append(f'<line x1="{sx(g)}" y1="{T-6}" x2="{sx(g)}" y2="{H-22}" stroke="{GRID}"/>')
             out.append(f'<text x="{sx(g)}" y="{H-8}" font-size="9.5" fill="{MUTE}" text-anchor="middle">{g:.2f}</text>')
@@ -208,21 +210,22 @@ ul {{ margin:0 0 2mm; padding-left:4.5mm; }} li {{ margin-bottom:1mm; }}
     p1 = f"""<section class="page">
 <div class="kick">LOTTE AX Challenge 2026 · 과제 7 · 한국후지필름</div>
 <h1>Q-Loop</h1>
-<div class="sub">문항이 매출로 검증받고, 스스로 날카로워지는 설문 에이전트</div>
+<div class="sub">매출 결과로 문항을 고르고 고치는 설문 에이전트</div>
 <hr class="rule">
 <p class="lead">설문이 보고서로 끝나 매출 액션과 끊겨 있으면, 어떤 문항이 실제로 매출을 움직였는지 아무도 모른 채 문항만 쌓인다.
-Q-Loop 는 모든 문항에게 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</b>로 자리를 증명하게 한다. 액션의 실제 매출 결과가 다음 분기 설문을 바꾸는 닫힌 고리다.</p>
+Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</b>를 따져 남길지 정한다. 액션의 실제 매출 결과가 다음 분기 설문을 바꾼다.</p>
 <div class="hero">
  <div><b>{pct(ct['qloop']['mean'])}</b><i>문항 고정 {pct(ct["fixed"]["mean"])} · 기존 {pct(ct["static"]["mean"])}</i>
  <span>8분기 순이익 포착률(정답을 알 때의 최선 대비). Q-Loop vs 같은 학습기·문항 고정. 시드 {pdiff['n_seeds']}개 중 {d_fix['wins']}개 우위 · 심은 정답 시뮬레이션</span></div>
  <div><b>14→{b['k']}문항</b><i>시험 AUC {b['auc_full14']:.3f} → {b['auc_qloop']:.3f}</i>
  <span>실제 응답 {b['n_train']+b['n_test']+p['n_train']+p['n_test']:,}건(공개 항공 만족도 설문) 출장 고객 세그먼트. 개인 고객은 14→{p['k']}문항, AUC {p['auc_qloop']-p['auc_full14']:+.3f}</span></div>
- <div><b>{E3['perturbed_blocked']:,} / {E3['perturbed_total']:,}</b><i>틀린 숫자 문장 차단</i>
- <span>틀리게 바꾼 리포트 문장 차단(맞는 문장 {E3['original_passed']}/{E3['original_claims']} 통과). 생성기·검증기를 같은 사람이 만든 기계적 보증 시험</span></div>
+ <div><b>{pct(E2['capture_by_segment']['fixed']['b2b_photo'])}→{pct(E2['capture_by_segment']['qloop']['b2b_photo'])}</b><i>사진관 파트너 · {E2['segment_paired']['b2b_photo']['wins']}/20 시드 우위</i>
+ <span>문항 진화만의 기여(같은 학습기 대비). B2B 거래조건을 추첨하지 않는 현업 제약 버전에서도 합계 {E2C['paired_diff']['qloop_minus_fixed']['mean']*100:+.1f}%p</span></div>
 </div>
 <h3>무엇이 다른가</h3>
 <ul>
 <li><b>상관이 아니라 효과로 문항을 고른다.</b> 만족도-매출 상관은 '누가 많이 사나'를 알려줄 뿐이다. Q-Loop 는 고객 15%에 액션을 무작위 배정하고, 응답에 따라 액션 효과가 갈리는 정도(액션×문항 상호작용의 |t|)를 문항의 결정 기여도로 쓴다.</li>
+<li><b>거래조건은 추첨하지 않는다.</b> B2B 는 방문 교육·샘플 측정·재고보충 제안 같은 서비스성 액션만 추첨한다. 근거 문항은 |t|≥3 일 때만 영업 화면에 보여 준다.</li>
 <li><b>문항이 진화한다.</b> 기여 없는 문항은 부활 조건과 함께 폐기, 개방형 응답에서 떠오른 주제는 새 문항으로 시험·승격. 근거 2회 전에는 바꾸지 않고, 회차당 변경 2개, 성과가 떨어지면 되돌린다.</li>
 <li><b>LLM 은 숫자를 만들지 않는다.</b> 숫자는 코드가 계산하고 문장은 인용만 한다. 검증기가 표에서 다시 계산해 틀린 문장을 막는다. 설문 발송·플랜 배포는 담당자 승인.</li>
 </ul>
@@ -235,7 +238,7 @@ Q-Loop 는 모든 문항에게 <b>"누구에게 어떤 액션을 줄지 바꾸�
 {foot(1)}</section>"""
 
     p2 = f"""<section class="page">
-<div class="kick">구조</div><h2>분기마다 도는 6단계 닫힌 고리</h2>
+<div class="kick">구조</div><h2>분기마다 도는 6단계 — 결과가 다음 설문을 바꾼다</h2>
 {fig_loop()}
 <div class="two" style="margin-top:3mm">
 <div><h3>역할 분담</h3>
@@ -244,17 +247,17 @@ Q-Loop 는 모든 문항에게 <b>"누구에게 어떤 액션을 줄지 바꾸�
 <tr><td>코드</td><td>결정 기여도, 효과 추정, 고객별 배정, 폐기·승격·되돌리기, 문장 검증</td></tr>
 <tr><td>사람</td><td>설문 발송 승인, 액션플랜 배포 승인, 불변 규칙 변경</td></tr></table>
 <h3>불변 영역 — 진화기가 못 건드림</h3>
-<ul><li>추세 비교용 앵커 문항(전반 만족)</li><li>무작위 대조군 하한 10% (기본 15%)</li><li>숫자 검증기</li><li>고객 ID 가명 처리 · 개인정보 LLM 비전송</li></ul>
+<ul><li>추세 비교용 앵커 문항(전반 만족)</li><li>추첨 대조군 하한 10% (기본 15%) — 코드에서 강제</li><li>숫자 검증기 — 코드에서 강제</li><li>고객 ID 가명 처리 · 개인정보 LLM 비전송 — 본선 어댑터에서 구현</li></ul>
 <p class="note">에이전트 코드가 시뮬레이션 정답 모듈을 import 하지 못하게 시험으로 막았다(tests/test_core.py).</p></div>
 <div><h3>OpenAI 스택(2026-11 기준)</h3>
 <table><tr><th style="width:22mm">구성</th><th>선택</th></tr>
 <tr><td>오케스트레이션</td><td>Agents SDK 0.24.0 · Responses API · Structured Outputs</td></tr>
 <tr><td>사람 승인</td><td><code>needs_approval=True</code> (발송·배포 도구)</td></tr>
 <tr><td>숫자 보증</td><td>출력 가드레일 = 검증기(하나라도 틀리면 차단)</td></tr>
-<tr><td>평가</td><td>자체 하네스 — Agent Builder·호스티드 Evals 는 11-30 종료 예정이라 미사용</td></tr></table>
+<tr><td>평가</td><td>자체 하네스 — Agent Builder 는 11-30 종료, 호스티드 Evals 는 10-31 읽기 전용·11-30 종료라 미사용</td></tr></table><p class="note">실제 OpenAI 모델 호출 기록은 아직 없다. 배선은 키 없이 구성과 가드레일 차단까지 시험했다.</p>
 <h3>모델 배분 — 오류가 번지는가, 되돌릴 수 있는가</h3>
 <table><tr><th style="width:24mm">단계</th><th style="width:21mm">모델</th><th>이유</th></tr>
-<tr><td>개방형 1차 코딩</td><td>gpt-6-luna</td><td>대량·되돌릴 수 있음. 사람 코딩 200건과 κ 비교, 선행연구 zero-shot κ 0.76 미달 시 상향</td></tr>
+<tr><td>개방형 1차 분류</td><td>gpt-6-luna</td><td>대량·되돌릴 수 있음(Decisions API 사용 가능 시 선택형). 사람 분류 200건과 κ 비교, 선행연구 zero-shot κ 0.76(GPT-4o, 독일어 설문 5,072건) 미달 시 상향</td></tr>
 <tr><td>불일치 판정·문항·플랜 문장</td><td>gpt-6.1-sol</td><td>고객에게 나가거나 경영 판단에 쓰임</td></tr>
 <tr><td>스캔본·표 이미지</td><td>gpt-6.1-terra</td><td>시각 입력</td></tr>
 <tr><td>기여도·배정·폐기</td><td>코드</td><td>재현·감사 가능해야 함</td></tr></table>
@@ -263,32 +266,34 @@ Q-Loop 는 모든 문항에게 <b>"누구에게 어떤 액션을 줄지 바꾸�
 {foot(2)}</section>"""
 
     p3 = f"""<section class="page">
-<div class="kick">실증 1 · 심은 정답 시뮬레이션 (사전등록)</div><h2>문항이 진화하면 액션이 맞는 고객에게 간다</h2>
-<p>후지필름형 세그먼트 3개(파트너 400곳 · 산업재 160곳 · 회원 4,000명), 8분기, 시드 {pdiff['n_seeds']}개. 누적 문항이 재지 못하는 니즈(결품·납기·필름값)와 5분기에 새로 생기는 굿즈 수요를 심었다. 세 정책을 공통 난수로 같은 세계에 나란히 돌렸다.</p>
+<div class="kick">실증 1 · 심은 정답 시뮬레이션 (비교 실행 전 설계 고정)</div><h2>문항이 진화하면 액션이 맞는 고객에게 간다</h2>
+<p>후지필름형 세그먼트 3개(파트너 400곳 · 산업재 160곳 · 회원 4,000명), 8분기, 시드 {pdiff['n_seeds']}개. 누적 문항이 재지 못하는 니즈(결품·납기·필름값)와 5번째 분기에 새로 생기는 굿즈 수요를 심었다. 세 정책을 공통 난수로 같은 세계에 나란히 돌렸다.</p>
 <h3>8분기 누적 순이익 — 정답을 알 때의 최선 대비 포착률 (선: 시드 부트스트랩 95% 구간)</h3>
 {fig_capture()}
 <div class="two">
 <div><table><tr><th>세그먼트</th>{''.join(f'<th class="num">{e(l.split("(")[0])}</th>' for _, l, _ in POL)}</tr>{seg_rows}</table>
-<p class="note">짝 차이 Q-Loop − 학습기만 {d_fix['mean']*100:+.1f}%p [{d_fix['ci95'][0]*100:.1f}, {d_fix['ci95'][1]*100:.1f}], {d_fix['wins']}/{pdiff['n_seeds']} 시드 우위. 응답률이 설문 길이에 안 떨어지는 세계에서도 {d_dec['mean']*100:+.1f}%p — 우위가 짧은 설문의 응답률 효과만은 아니다.</p></div>
+<p class="note">짝 차이 Q-Loop − 학습기만 {d_fix['mean']*100:+.1f}%p [{d_fix['ci95'][0]*100:.1f}, {d_fix['ci95'][1]*100:.1f}], {d_fix['wins']}/{pdiff['n_seeds']} 시드 우위. 응답률이 설문 길이에 안 떨어지는 세계에서도 {d_dec['mean']*100:+.1f}%p — 우위가 짧은 설문의 응답률 효과만은 아니다. 세그먼트별 우위 시드: 사진관 {E2['segment_paired']['b2b_photo']['wins']}/20 · 산업재 {E2['segment_paired']['b2b_industrial']['wins']}/20 · 회원 {E2['segment_paired']['b2c_instax']['wins']}/20. B2B 거래조건 추첨 금지 버전(사후 추가) {E2C['paired_diff']['qloop_minus_fixed']['mean']*100:+.1f}%p, {E2C['paired_diff']['qloop_minus_fixed']['wins']}/20.</p></div>
 <div><table><tr><th>진화 판단의 정오(세계 정답으로 채점)</th><th class="num">승격 중 실제 신호</th><th class="num">폐기 중 실제 신호</th></tr>{aud_rows}</table>
-<p class="note">B2C 처럼 응답이 많으면 승격이 정확하다. 고객이 적은 B2B 는 오폐기가 약 30% — 구축방안의 계층 모델 보완 대상.</p></div>
+<p class="note">B2C 처럼 응답이 많으면 승격이 정확하다(승격 40건 중 재시험 복귀 2건을 뺀 새 문항 38건이 모두 신호). B2B 두 세그먼트는 폐기 판단의 28~30%가 실제 신호 문항 — 계층 모델·담당자 승인으로 보완.</p></div>
 </div>
 <h3>B2C 회원 세그먼트 — 설문은 짧아지고 신호는 진해진다</h3>
 {fig_b2c()}
-<p class="note">누적 문항이 못 재던 니즈는 모든 시드에서 2분기에 새 문항으로 잡혔고, 5분기에 생긴 굿즈 수요는 그다음 분기에 잡혔다. 되돌리기는 60개 세그먼트-실행 중 {E2['rollbacks_total']}회 발동. <b>한계:</b> 이 세계는 직접 만든 것이라 결과는 "메커니즘이 설계대로 작동한다"는 증거이지 실제 매출 효과의 크기가 아니다. 기존 방식의 낮은 성적은 '만족도가 매출 수준과만 엮인다'는 세계 가정에서 나온다.</p>
+<p class="note">누적 문항이 못 재던 니즈는 모든 시드에서 2분기에 새 문항으로 잡혔고(산업재 납기 문항은 이후 25% 시드에서 다시 빠짐), 5번째 분기에 생긴 굿즈 수요는 그다음 분기에 잡혔다. 되돌리기는 60개 세그먼트-실행 중 {E2['rollbacks_total']}회 발동. <b>한계:</b> 이 세계는 직접 만든 것이라 결과는 "메커니즘이 설계대로 작동한다"는 증거이지 실제 매출 효과의 크기가 아니다. 기존 방식의 낮은 성적은 '만족도가 매출 수준과만 엮인다'는 세계 가정에서 나온다.</p>
 {foot(3)}</section>"""
 
     sp = "".join(f'<tr><td>{e(x["label"])}</td><td>{e(" · ".join(x["selected"]))}</td></tr>' for x in [b, p])
     p4 = f"""<section class="page">
 <div class="kick">실증 2 · 실제 응답 / 실증 3 · 검증기</div><h2>실제 사람 응답에서도 정보를 잃지 않고 줄었다</h2>
-<p>공개 항공 만족도 설문(학습 103,904명 · 시험 25,976명, 서비스 평가 14문항 + 만족 여부)을 출장 고객(B2B 성격)과 개인 여행 고객(B2C 성격)으로 나눠, 응답을 6개 물결로 흘리며 같은 폐기 규칙을 적용했다. 시험 데이터는 마지막에 한 번만 썼다. 비교 방식에는 Q-Loop 가 스스로 정한 문항 수를 그대로 줬다.</p>
+<p>공개 항공 만족도 설문(학습 103,904명 · 시험 25,976명, 서비스 평가 14문항 + 만족 여부)을 출장 고객과 개인 여행 고객으로 나눠, 응답을 6개 물결로 흘리며 같은 절차(2회 연속 미달 폐기 · 중복 정리 · 상한)를 예측 기여도로 적용했다. 시험 데이터는 마지막에 한 번만 썼고, 비교 방식에는 Q-Loop 가 스스로 정한 문항 수를 그대로 줬다.</p>
 {fig_e1()}
-<table><tr><th>세그먼트</th><th>Q-Loop 가 남긴 문항</th></tr>{sp}</table>
-<div class="box"><b>정직하게 읽기.</b> 결과 예측만 보면 단순 상관 상위 선택도 비슷했다(출장 {b['auc_top_corr']:.3f}, 개인 {p['auc_top_corr']:.3f}). 개인 고객에서는 '평균 점수 낮은 순'도 같은 문항을 골랐다. Q-Loop 의 차별점은 예측이 아니라 <b>액션 효과를 가르는 데</b> 있고, 그건 실증 1이 보여 준다. 이 실험이 보여 주는 것은 폐기 규칙이 실제 응답에서 정보를 잃지 않는다는 점과, B2B·B2C 설문이 서로 다르게 줄어든다는 점이다.</div>
+<div class="box"><b>남은 문항</b> — 출장: {e(" · ".join(b["selected"]))} / 개인: {e(" · ".join(p["selected"]))}<br><b>정직하게 읽기.</b> 결과 예측만 보면 단순 상관 상위 선택도 비슷했다(출장 {b['auc_top_corr']:.3f}, 개인 {p['auc_top_corr']:.3f}). 개인 고객에서는 '평균 점수 낮은 순'도 같은 문항을 골랐다. Q-Loop 의 차별점은 예측이 아니라 <b>액션 효과를 가르는 데</b> 있고, 그건 실증 1이 보여 준다. 이 실험이 보여 주는 것은 폐기 절차가 실제 응답에서 정보를 잃지 않는다는 점과, 고객군마다 남는 문항이 다르다는 점이다.</div>
+<h3>근거 문항 — 뚜렷할 때만 보여 준다(사후 추가)</h3>
+<table><tr><th>세그먼트(시드 20, 마지막 분기)</th><th class="num">최댓값 문항을 그대로 쓸 때</th><th class="num">|t|≥3 만 표시</th></tr>
+{''.join(f'<tr><td>{e(SEGLAB[k])}</td><td class="num">{v["all_top"]}</td><td class="num">{v["shown_t>=3"]}</td></tr>' for k, v in E3["evidence_accuracy"].items())}</table>
+<p class="note">'실제 니즈 문항'은 세계 정답으로 채점. 기준 미만이면 영업 화면에 "근거 문항 없음 — 평균 효과로 배정"으로 쓴다.</p>
 <h3>검증기 — 틀린 숫자 문장은 배포되지 않는다</h3>
-<div class="two"><div><table><tr><th>틀리게 바꾼 방식</th><th class="num">차단/생성</th></tr>{e3_rows}
-<tr><td><b>합계</b></td><td class="num"><b>{E3['perturbed_blocked']}/{E3['perturbed_total']}</b></td></tr>
-<tr><td>맞는 문장 통과</td><td class="num">{E3['original_passed']}/{E3['original_claims']}</td></tr></table></div>
+<div class="two"><div><table style="font-size:8.4pt"><tr><th>틀리게 바꾼 방식</th><th class="num">차단/생성</th></tr>{e3_rows}
+<tr><td><b>합계</b> · 맞는 문장 통과 {E3['original_passed']}/{E3['original_claims']}</td><td class="num"><b>{E3['perturbed_blocked']}/{E3['perturbed_total']}</b></td></tr></table></div>
 <div><p class="note">규칙: ①인용한 값마다 표에서 다시 꺼내 같은 형식으로 쓴 문자열이 문장에 그대로 있어야 한다 ②문장 속 숫자는 전부 인용에서 나와야 한다 ③인용한 근거 문항 문구가 표와 같아야 한다.</p>
 <p class="note">문장 생성기와 검증기를 같은 사람이 만들었으므로 기계적 보증 시험이다. 본선에서 OpenAI 모델이 쓴 문장으로 차단율을 다시 잰다. Agents SDK 출력 가드레일로 연결해 키 없이 구성 시험을 통과했다(qloop/agent_openai.py --build-only).</p></div></div>
 {foot(4)}</section>"""
