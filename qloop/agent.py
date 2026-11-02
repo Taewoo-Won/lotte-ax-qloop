@@ -54,10 +54,10 @@ class _Base:
         self.actions = [a["key"] for a in cat["actions"]]
         self.action_label = {a["key"]: a["label"] for a in cat["actions"]}
         self.cost = {a["key"]: a["cost"] for a in cat["actions"]}
-        self.bank = Bank.from_legacy(seg_key, cat["legacy"], anchors)
+        self.coder = LexiconCoder()
+        self.bank = Bank.from_legacy(seg_key, cat["legacy"], anchors, tagger=self.coder)
         self.rng = np.random.default_rng([seed, 99, seg_index])
         self.history: list[RoundData] = []
-        self.coder = LexiconCoder()
         self.ref = None
         self._sales_sum = None
         self._sales_cnt = 0
@@ -117,13 +117,13 @@ class QLoopAgent(_Base):
     def compose(self, rnd: int) -> list[str]:
         items = self.bank.items.values()
         anchors = [i.qid for i in items if i.status == "active" and i.anchor]
-        cands = sorted([i for i in items if i.status == "candidate"], key=lambda i: -i.born_round)
+        cands = sorted([i for i in items if i.status == "candidate"], key=lambda i: i.born_round)   # 먼저 온 후보부터
         if not self.cfg.evolve or rnd < self.cfg.pilot_rounds:
             act = [i.qid for i in items if i.status == "active" and not i.anchor]
             return anchors + act + [c.qid for c in cands][: self.cfg.explore_slots]
         explore = [c.qid for c in cands][: self.cfg.explore_slots]
         if len(explore) < self.cfg.explore_slots:
-            dead = sorted([i for i in items if i.status == "killed" and i.theme is None
+            dead = sorted([i for i in items if i.status == "killed" and not i.qid.startswith("N")
                            and i.killed_round is not None and rnd - i.killed_round >= self.cfg.retest_after],
                           key=lambda i: i.killed_round)
             for d in dead[: self.cfg.explore_slots - len(explore)]:
@@ -248,7 +248,7 @@ class QLoopAgent(_Base):
         for v, q, why in kills[: cfg.max_kills]:
             it = bank.items[q]
             it.status, it.killed_round, it.kill_reason = "killed", rnd, why
-            if it.theme:
+            if it.theme and it.qid.startswith("N"):
                 share = theme_shares(rd.coded).get(it.theme, 0.0)
                 it.theme_share_at_kill = share
                 it.revival = f"개방형 응답에서 '{it.theme}' 비율이 {max(2 * share, cfg.theme_share):.0%} 이상으로 오르면 재제안"

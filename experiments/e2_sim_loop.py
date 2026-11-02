@@ -44,7 +44,8 @@ def run_one(seed: int, kind: str, rounds: int, decay):
             truth = world.last_truth
             ag.learn(RoundData(t, qids, resp, answers, texts, coded, assign, randomized, sales, ref))
             nonanchor = [q for q in qids if not ag.bank.items[q].anchor]
-            covered = {h: any(world.truth_need_of(seg, q) == h for q in qids) for h in HIDDEN[seg]}
+            covered = {h: any(world.truth_need_of(seg, q) == h and world.truth_informative(seg, q) for q in qids)
+                       for h in HIDDEN[seg]}
             recs.append({
                 "seed": seed, "kind": kind, "seg": seg, "round": t, "n_q": len(qids),
                 "rr": len(resp) / ag.n, "net": float(truth["net"].sum()), "oracle": float(truth["oracle"].sum()),

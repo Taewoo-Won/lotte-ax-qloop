@@ -48,15 +48,20 @@ class Bank:
 
     # ── 생성 ──
     @classmethod
-    def from_legacy(cls, segment: str, legacy: list[dict], anchors: set[str]) -> "Bank":
+    def from_legacy(cls, segment: str, legacy: list[dict], anchors: set[str], tagger=None) -> "Bank":
+        """누적 문항을 은행에 넣으면서 같은 주제 어휘로 태깅한다(이미 재는 주제에 새 문항을 또 만들지 않게)."""
         b = cls(segment)
         for q in legacy:
+            th = None
+            if tagger is not None:
+                labels = tagger.code([q["text"]])[0]
+                th = labels[0] if labels else None
             b.items[q["qid"]] = Item(qid=q["qid"], text=q["text"], source=q["source"], anchor=q["qid"] in anchors,
-                                     polarity=q.get("polarity", "+"), linked_action=q.get("linked_action"))
+                                     polarity=q.get("polarity", "+"), linked_action=q.get("linked_action"), theme=th)
         return b
 
     def new_qid(self) -> str:
-        qid = f"N{self.segment[:3].upper()}{self._next:02d}"
+        qid = f"N{self.segment.split('_')[-1][:3].upper()}{self._next:02d}"
         self._next += 1
         return qid
 
