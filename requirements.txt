@@ -1,0 +1,7 @@
+numpy>=2.0
+pandas>=2.2
+scikit-learn>=1.5
+# 본선(OpenAI 환경)용 선택 의존성
+openai==3.42.1
+openai-agents==0.24.0
+pydantic>=2
