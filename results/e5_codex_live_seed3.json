@@ -1,0 +1,361 @@
+{
+ "started_utc": "2026-11-03T09:57:20.044122+00:00",
+ "finished_utc": "2026-11-03T09:58:23.411776+00:00",
+ "codex_version": "codex-cli 0.156.1",
+ "seed": 3,
+ "verifier": "v2",
+ "model_line": "model: gpt-5.6-sol",
+ "t1_plans": [
+  {
+   "segment": "b2b_photo",
+   "prompt": "너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2b_photo. 액션 이름: {\"restock\": \"자동 재고보충 계약\", \"visit_train\": \"운영 교육 방문\", \"rebate\": \"볼륨 리베이트\", \"newbiz_kit\": \"신사업 키트 시연\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"8\", \"값\": 8}, \"n_resp\": {\"표기\": \"259\", \"값\": 259}, \"rr\": {\"표기\": \"64.8%\", \"값\": 0.6475}, \"alpha[restock]\": {\"표기\": \"+2.5%\", \"값\": 0.024781}, \"alpha_t[restock]\": {\"표기\": \"2.2\", \"값\": 2.158696}, \"n_assigned[restock]\": {\"표기\": \"94\", \"값\": 94}, \"top_q[restock]\": {\"표기\": \"NPHO01\", \"값\": \"NPHO01\"}, \"top_q_text[restock]\": {\"표기\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\", \"값\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\"}, \"delta[restock,NPHO01]\": {\"표기\": \"+3.5%\", \"값\": 0.034762}, \"delta_t[restock,NPHO01]\": {\"표기\": \"2.5\", \"값\": 2.496755}, \"alpha[visit_train]\": {\"표기\": \"+0.8%\", \"값\": 0.008493}, \"alpha_t[visit_train]\": {\"표기\": \"0.4\", \"값\": 0.414272}, \"n_assigned[visit_train]\": {\"표기\": \"36\", \"값\": 36}, \"top_q[visit_train]\": {\"표기\": \"NPHO01\", \"값\": \"NPHO01\"}, \"top_q_text[visit_train]\": {\"표기\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\", \"값\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\"}, \"delta[visit_train,NPHO01]\": {\"표기\": \"-3.6%\", \"값\": -0.035515}, \"delta_t[visit_train,NPHO01]\": {\"표기\": \"-1.9\", \"값\": -1.930166}, \"alpha[rebate]\": {\"표기\": \"+1.5%\", \"값\": 0.015483}, \"alpha_t[rebate]\": {\"표기\": \"1.1\", \"값\": 1.081517}, \"n_assigned[rebate]\": {\"표기\": \"130\", \"값\": 130}, \"top_q[rebate]\": {\"표기\": \"A09\", \"값\": \"A09\"}, \"top_q_text[rebate]\": {\"표기\": \"매장 인테리어 지원에 만족한다\", \"값\": \"매장 인테리어 지원에 만족한다\"}, \"delta[rebate,A09]\": {\"표기\": \"-2.5%\", \"값\": -0.02549}, \"delta_t[rebate,A09]\": {\"표기\": \"-1.2\", \"값\": -1.186949}, \"alpha[newbiz_kit]\": {\"표기\": \"-1.1%\", \"값\": -0.011124}, \"alpha_t[newbiz_kit]\": {\"표기\": \"-0.6\", \"값\": -0.616627}, \"n_assigned[newbiz_kit]\": {\"표기\": \"47\", \"값\": 47}, \"top_q[newbiz_kit]\": {\"표기\": \"A08\", \"값\": \"A08\"}, \"top_q_text[newbiz_kit]\": {\"표기\": \"포토카드·셀피 등 신규 서비스에 관심 있다\", \"값\": \"포토카드·셀피 등 신규 서비스에 관심 있다\"}, \"delta[newbiz_kit,A08]\": {\"표기\": \"+4.7%\", \"값\": 0.04708}, \"delta_t[newbiz_kit,A08]\": {\"표기\": \"3.3\", \"값\": 3.321717}}",
+   "stdout": "<<<JSON {\"claims\":[{\"text\":\"전체 계획은 8개 문항에 응답한 259명의 결과와 응답률 64.8%를 근거로 한다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"자동 재고보충 계약은 94에 배정하며, 평균 효과는 +2.5%, 효과 지표는 2.2다.\",\"cite\":[\"n_assigned[restock]\",\"alpha[restock]\",\"alpha_t[restock]\"]},{\"text\":\"자동 재고보충 계약은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[restock,NPHO01]\"]},{\"text\":\"운영 교육 방문은 36에 배정하며, 평균 효과는 +0.8%, 효과 지표는 0.4다.\",\"cite\":[\"n_assigned[visit_train]\",\"alpha[visit_train]\",\"alpha_t[visit_train]\"]},{\"text\":\"운영 교육 방문은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[visit_train,NPHO01]\"]},{\"text\":\"볼륨 리베이트는 130에 배정하며, 평균 효과는 +1.5%, 효과 지표는 1.1이다.\",\"cite\":[\"n_assigned[rebate]\",\"alpha[rebate]\",\"alpha_t[rebate]\"]},{\"text\":\"볼륨 리베이트는 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[rebate,A09]\"]},{\"text\":\"신사업 키트 시연은 47에 배정하며, 평균 효과는 -1.1%, 효과 지표는 -0.6이다.\",\"cite\":[\"n_assigned[newbiz_kit]\",\"alpha[newbiz_kit]\",\"alpha_t[newbiz_kit]\"]},{\"text\":\"A08의 ‘포토카드·셀피 등 신규 서비스에 관심 있다’ 특성에서는 효과가 +4.7%, 효과 지표가 3.3이므로 신사업 키트 시연의 우선 대상으로 삼는다.\",\"cite\":[\"top_q[newbiz_kit]\",\"top_q_text[newbiz_kit]\",\"delta[newbiz_kit,A08]\",\"delta_t[newbiz_kit,A08]\"]}]} JSON>>>\n",
+   "stderr_head": "Reading additional input from stdin...\nOpenAI Codex v0.156.1\n--------\nworkdir: /tmp/qloop_codex_8rbcteg4\nmodel: gpt-5.6-sol\nprovider: openai\napproval: never\nsandbox: read-only\nreasoning effort: high\nreasoning summaries: none\nsession id: 01a1a0d7-925c-7be3-a69b-d29094b9bacf\n--------\nuser\n너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2b_photo. 액션 이름: {\"restock\": \"자동 재고보충 계약\", \"visit_train\": \"운영 교육 방문\", \"rebate\": \"볼륨 리베이트\", \"newbiz_kit\": \"신사업 키트 시연\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"8\", \"값\": 8}, \"n_resp\": {\"표기\": \"259\", \"값\": 259}, \"rr\": {\"표기\": \"64.8%\", \"값\": 0.6475}, \"alpha[restock]\": {\"표기\": \"+2.5%\", \"값\": 0.024781}, \"alpha_t[restock]\": {\"표기\": \"2.2\", \"값\": 2.158696}, \"n_assigned[restock]\": {\"표기\": \"94\", \"값\": 94}, \"top_q[restock]\": {\"표기\": \"NPHO01\", \"값\": \"NPHO01\"}, \"top_q_text[restock]\": {\"표기\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\", \"값\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\"}, \"delta[restock,NPHO01]\": {\"표기\": \"+3.5%\", \"값\": 0.034762}, \"delta_t[restock,NPHO01]\": {\"표기\": \"2.5\", \"값\": 2.496755}, \"alpha[visit_train]\": {\"표기\": \"+0.8%\", \"값\": 0.008493}, \"alpha_t[visit_train]\": {\"표기\": \"0.4\", \"값\": 0.414272}, \"n_a",
+   "stderr_tail": ", \"값\": 0.024781}, \"alpha_t[restock]\": {\"표기\": \"2.2\", \"값\": 2.158696}, \"n_assigned[restock]\": {\"표기\": \"94\", \"값\": 94}, \"top_q[restock]\": {\"표기\": \"NPHO01\", \"값\": \"NPHO01\"}, \"top_q_text[restock]\": {\"표기\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\", \"값\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\"}, \"delta[restock,NPHO01]\": {\"표기\": \"+3.5%\", \"값\": 0.034762}, \"delta_t[restock,NPHO01]\": {\"표기\": \"2.5\", \"값\": 2.496755}, \"alpha[visit_train]\": {\"표기\": \"+0.8%\", \"값\": 0.008493}, \"alpha_t[visit_train]\": {\"표기\": \"0.4\", \"값\": 0.414272}, \"n_assigned[visit_train]\": {\"표기\": \"36\", \"값\": 36}, \"top_q[visit_train]\": {\"표기\": \"NPHO01\", \"값\": \"NPHO01\"}, \"top_q_text[visit_train]\": {\"표기\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\", \"값\": \"최근 3개월 인화지·필름 결품으로 판매를 놓친 적이 자주 있었다\"}, \"delta[visit_train,NPHO01]\": {\"표기\": \"-3.6%\", \"값\": -0.035515}, \"delta_t[visit_train,NPHO01]\": {\"표기\": \"-1.9\", \"값\": -1.930166}, \"alpha[rebate]\": {\"표기\": \"+1.5%\", \"값\": 0.015483}, \"alpha_t[rebate]\": {\"표기\": \"1.1\", \"값\": 1.081517}, \"n_assigned[rebate]\": {\"표기\": \"130\", \"값\": 130}, \"top_q[rebate]\": {\"표기\": \"A09\", \"값\": \"A09\"}, \"top_q_text[rebate]\": {\"표기\": \"매장 인테리어 지원에 만족한다\", \"값\": \"매장 인테리어 지원에 만족한다\"}, \"delta[rebate,A09]\": {\"표기\": \"-2.5%\", \"값\": -0.02549}, \"delta_t[rebate,A09]\": {\"표기\": \"-1.2\", \"값\": -1.186949}, \"alpha[newbiz_kit]\": {\"표기\": \"-1.1%\", \"값\": -0.011124}, \"alpha_t[newbiz_kit]\": {\"표기\": \"-0.6\", \"값\": -0.616627}, \"n_assigned[newbiz_kit]\": {\"표기\": \"47\", \"값\": 47}, \"top_q[newbiz_kit]\": {\"표기\": \"A08\", \"값\": \"A08\"}, \"top_q_text[newbiz_kit]\": {\"표기\": \"포토카드·셀피 등 신규 서비스에 관심 있다\", \"값\": \"포토카드·셀피 등 신규 서비스에 관심 있다\"}, \"delta[newbiz_kit,A08]\": {\"표기\": \"+4.7%\", \"값\": 0.04708}, \"delta_t[newbiz_kit,A08]\": {\"표기\": \"3.3\", \"값\": 3.321717}}\n2026-11-03T09:57:24.975482Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: \"Bearer resource_metadata=\\\"https://mcp.fal.ai/.well-known/oauth-protected-resource/mcp\\\"\" })\ncodex\n<<<JSON {\"claims\":[{\"text\":\"전체 계획은 8개 문항에 응답한 259명의 결과와 응답률 64.8%를 근거로 한다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"자동 재고보충 계약은 94에 배정하며, 평균 효과는 +2.5%, 효과 지표는 2.2다.\",\"cite\":[\"n_assigned[restock]\",\"alpha[restock]\",\"alpha_t[restock]\"]},{\"text\":\"자동 재고보충 계약은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[restock,NPHO01]\"]},{\"text\":\"운영 교육 방문은 36에 배정하며, 평균 효과는 +0.8%, 효과 지표는 0.4다.\",\"cite\":[\"n_assigned[visit_train]\",\"alpha[visit_train]\",\"alpha_t[visit_train]\"]},{\"text\":\"운영 교육 방문은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[visit_train,NPHO01]\"]},{\"text\":\"볼륨 리베이트는 130에 배정하며, 평균 효과는 +1.5%, 효과 지표는 1.1이다.\",\"cite\":[\"n_assigned[rebate]\",\"alpha[rebate]\",\"alpha_t[rebate]\"]},{\"text\":\"볼륨 리베이트는 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[rebate,A09]\"]},{\"text\":\"신사업 키트 시연은 47에 배정하며, 평균 효과는 -1.1%, 효과 지표는 -0.6이다.\",\"cite\":[\"n_assigned[newbiz_kit]\",\"alpha[newbiz_kit]\",\"alpha_t[newbiz_kit]\"]},{\"text\":\"A08의 ‘포토카드·셀피 등 신규 서비스에 관심 있다’ 특성에서는 효과가 +4.7%, 효과 지표가 3.3이므로 신사업 키트 시연의 우선 대상으로 삼는다.\",\"cite\":[\"top_q[newbiz_kit]\",\"top_q_text[newbiz_kit]\",\"delta[newbiz_kit,A08]\",\"delta_t[newbiz_kit,A08]\"]}]} JSON>>>\ntokens used\n19,518\n",
+   "rc": 0,
+   "sec": 18.4,
+   "claims": [
+    {
+     "text": "전체 계획은 8개 문항에 응답한 259명의 결과와 응답률 64.8%를 근거로 한다.",
+     "cite": [
+      "n_q",
+      "n_resp",
+      "rr"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "자동 재고보충 계약은 94에 배정하며, 평균 효과는 +2.5%, 효과 지표는 2.2다.",
+     "cite": [
+      "n_assigned[restock]",
+      "alpha[restock]",
+      "alpha_t[restock]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "자동 재고보충 계약은 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[restock,NPHO01]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "운영 교육 방문은 36에 배정하며, 평균 효과는 +0.8%, 효과 지표는 0.4다.",
+     "cite": [
+      "n_assigned[visit_train]",
+      "alpha[visit_train]",
+      "alpha_t[visit_train]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "운영 교육 방문은 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[visit_train,NPHO01]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "볼륨 리베이트는 130에 배정하며, 평균 효과는 +1.5%, 효과 지표는 1.1이다.",
+     "cite": [
+      "n_assigned[rebate]",
+      "alpha[rebate]",
+      "alpha_t[rebate]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "볼륨 리베이트는 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[rebate,A09]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "신사업 키트 시연은 47에 배정하며, 평균 효과는 -1.1%, 효과 지표는 -0.6이다.",
+     "cite": [
+      "n_assigned[newbiz_kit]",
+      "alpha[newbiz_kit]",
+      "alpha_t[newbiz_kit]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "A08의 ‘포토카드·셀피 등 신규 서비스에 관심 있다’ 특성에서는 효과가 +4.7%, 효과 지표가 3.3이므로 신사업 키트 시연의 우선 대상으로 삼는다.",
+     "cite": [
+      "top_q[newbiz_kit]",
+      "top_q_text[newbiz_kit]",
+      "delta[newbiz_kit,A08]",
+      "delta_t[newbiz_kit,A08]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    }
+   ]
+  },
+  {
+   "segment": "b2b_industrial",
+   "prompt": "너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2b_industrial. 액션 이름: {\"tech_support\": \"기술 세미나·샘플 측정 지원\", \"annual_contract\": \"연간 단가 계약\", \"lead_guarantee\": \"납기 보장 옵션\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"7\", \"값\": 7}, \"n_resp\": {\"표기\": \"92\", \"값\": 92}, \"rr\": {\"표기\": \"57.5%\", \"값\": 0.575}, \"alpha[tech_support]\": {\"표기\": \"-1.6%\", \"값\": -0.015691}, \"alpha_t[tech_support]\": {\"표기\": \"-0.6\", \"값\": -0.588845}, \"n_assigned[tech_support]\": {\"표기\": \"7\", \"값\": 7}, \"top_q[tech_support]\": {\"표기\": \"B02\", \"값\": \"B02\"}, \"top_q_text[tech_support]\": {\"표기\": \"기술 문의 응답에 만족한다\", \"값\": \"기술 문의 응답에 만족한다\"}, \"delta[tech_support,B02]\": {\"표기\": \"-3.1%\", \"값\": -0.030879}, \"delta_t[tech_support,B02]\": {\"표기\": \"-1.4\", \"값\": -1.40855}, \"alpha[annual_contract]\": {\"표기\": \"-0.2%\", \"값\": -0.002298}, \"alpha_t[annual_contract]\": {\"표기\": \"-0.1\", \"값\": -0.079365}, \"n_assigned[annual_contract]\": {\"표기\": \"22\", \"값\": 22}, \"top_q[annual_contract]\": {\"표기\": \"NIND03\", \"값\": \"NIND03\"}, \"top_q_text[annual_contract]\": {\"표기\": \"후지필름몰 앱·온라인 이용에 불편이 있다\", \"값\": \"후지필름몰 앱·온라인 이용에 불편이 있다\"}, \"delta[annual_contract,NIND03]\": {\"표기\": \"-5.9%\", \"값\": -0.059132}, \"delta_t[annual_contract,NIND03]\": {\"표기\": \"-1.9\", \"값\": -1.937818}, \"alpha[lead_guarantee]\": {\"표기\": \"+0.5%\", \"값\": 0.004899}, \"alpha_t[lead_guarantee]\": {\"표기\": \"0.3\", \"값\": 0.257576}, \"n_assigned[lead_guarantee]\": {\"표기\": \"38\", \"값\": 38}, \"top_q[lead_guarantee]\": {\"표기\": \"NIND01\", \"값\": \"NIND01\"}, \"top_q_text[lead_guarantee]\": {\"표기\": \"최근 6개월 납기 지연으로 일정에 차질이 있었다\", \"값\": \"최근 6개월 납기 지연으로 일정에 차질이 있었다\"}, \"delta[lead_guarantee,NIND01]\": {\"표기\": \"+2.8%\", \"값\": 0.028438}, \"delta_t[lead_guarantee,NIND01]\": {\"표기\": \"1.4\", \"값\": 1.414616}}",
+   "stdout": "<<<JSON {\"claims\":[{\"text\":\"조사는 7개 문항에 92명이 응답했으며 응답률은 57.5%다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"기술 세미나·샘플 측정 지원은 7명에게 배정됐고 평균 효과는 -1.6%, 효과의 통계량은 -0.6이다.\",\"cite\":[\"n_assigned[tech_support]\",\"alpha[tech_support]\",\"alpha_t[tech_support]\"]},{\"text\":\"기술 세미나·샘플 측정 지원은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[tech_support,B02]\"]},{\"text\":\"연간 단가 계약은 22명에게 배정됐고 평균 효과는 -0.2%, 효과의 통계량은 -0.1이다.\",\"cite\":[\"n_assigned[annual_contract]\",\"alpha[annual_contract]\",\"alpha_t[annual_contract]\"]},{\"text\":\"연간 단가 계약은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[annual_contract,NIND03]\"]},{\"text\":\"납기 보장 옵션은 38명에게 배정됐고 평균 효과는 +0.5%, 효과의 통계량은 0.3이다.\",\"cite\":[\"n_assigned[lead_guarantee]\",\"alpha[lead_guarantee]\",\"alpha_t[lead_guarantee]\"]},{\"text\":\"납기 보장 옵션은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[lead_guarantee,NIND01]\"]},{\"text\":\"이번 분기에는 평균 효과가 +0.5%인 납기 보장 옵션을 우선 실행하고, -0.2%인 연간 단가 계약과 -1.6%인 기술 세미나·샘플 측정 지원은 보완 후 운영한다.\",\"cite\":[\"alpha[lead_guarantee]\",\"alpha[annual_contract]\",\"alpha[tech_support]\"]}]} JSON>>>\n",
+   "stderr_head": "Reading additional input from stdin...\nOpenAI Codex v0.156.1\n--------\nworkdir: /tmp/qloop_codex_shhrlld1\nmodel: gpt-5.6-sol\nprovider: openai\napproval: never\nsandbox: read-only\nreasoning effort: high\nreasoning summaries: none\nsession id: 01a1a0d7-d837-7cd0-b081-1d1e5ba0f96b\n--------\nuser\n너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2b_industrial. 액션 이름: {\"tech_support\": \"기술 세미나·샘플 측정 지원\", \"annual_contract\": \"연간 단가 계약\", \"lead_guarantee\": \"납기 보장 옵션\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"7\", \"값\": 7}, \"n_resp\": {\"표기\": \"92\", \"값\": 92}, \"rr\": {\"표기\": \"57.5%\", \"값\": 0.575}, \"alpha[tech_support]\": {\"표기\": \"-1.6%\", \"값\": -0.015691}, \"alpha_t[tech_support]\": {\"표기\": \"-0.6\", \"값\": -0.588845}, \"n_assigned[tech_support]\": {\"표기\": \"7\", \"값\": 7}, \"top_q[tech_support]\": {\"표기\": \"B02\", \"값\": \"B02\"}, \"top_q_text[tech_support]\": {\"표기\": \"기술 문의 응답에 만족한다\", \"값\": \"기술 문의 응답에 만족한다\"}, \"delta[tech_support,B02]\": {\"표기\": \"-3.1%\", \"값\": -0.030879}, \"delta_t[tech_support,B02]\": {\"표기\": \"-1.4\", \"값\": -1.40855}, \"alpha[annual_contract]\": {\"표기\": \"-0.2%\", \"값\": -0.002298}, \"alpha_t[annual_contract]\": {\"표기\": \"-0.1\", \"값\": -0.079365}, \"n_assigned",
+   "stderr_tail": " 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"7\", \"값\": 7}, \"n_resp\": {\"표기\": \"92\", \"값\": 92}, \"rr\": {\"표기\": \"57.5%\", \"값\": 0.575}, \"alpha[tech_support]\": {\"표기\": \"-1.6%\", \"값\": -0.015691}, \"alpha_t[tech_support]\": {\"표기\": \"-0.6\", \"값\": -0.588845}, \"n_assigned[tech_support]\": {\"표기\": \"7\", \"값\": 7}, \"top_q[tech_support]\": {\"표기\": \"B02\", \"값\": \"B02\"}, \"top_q_text[tech_support]\": {\"표기\": \"기술 문의 응답에 만족한다\", \"값\": \"기술 문의 응답에 만족한다\"}, \"delta[tech_support,B02]\": {\"표기\": \"-3.1%\", \"값\": -0.030879}, \"delta_t[tech_support,B02]\": {\"표기\": \"-1.4\", \"값\": -1.40855}, \"alpha[annual_contract]\": {\"표기\": \"-0.2%\", \"값\": -0.002298}, \"alpha_t[annual_contract]\": {\"표기\": \"-0.1\", \"값\": -0.079365}, \"n_assigned[annual_contract]\": {\"표기\": \"22\", \"값\": 22}, \"top_q[annual_contract]\": {\"표기\": \"NIND03\", \"값\": \"NIND03\"}, \"top_q_text[annual_contract]\": {\"표기\": \"후지필름몰 앱·온라인 이용에 불편이 있다\", \"값\": \"후지필름몰 앱·온라인 이용에 불편이 있다\"}, \"delta[annual_contract,NIND03]\": {\"표기\": \"-5.9%\", \"값\": -0.059132}, \"delta_t[annual_contract,NIND03]\": {\"표기\": \"-1.9\", \"값\": -1.937818}, \"alpha[lead_guarantee]\": {\"표기\": \"+0.5%\", \"값\": 0.004899}, \"alpha_t[lead_guarantee]\": {\"표기\": \"0.3\", \"값\": 0.257576}, \"n_assigned[lead_guarantee]\": {\"표기\": \"38\", \"값\": 38}, \"top_q[lead_guarantee]\": {\"표기\": \"NIND01\", \"값\": \"NIND01\"}, \"top_q_text[lead_guarantee]\": {\"표기\": \"최근 6개월 납기 지연으로 일정에 차질이 있었다\", \"값\": \"최근 6개월 납기 지연으로 일정에 차질이 있었다\"}, \"delta[lead_guarantee,NIND01]\": {\"표기\": \"+2.8%\", \"값\": 0.028438}, \"delta_t[lead_guarantee,NIND01]\": {\"표기\": \"1.4\", \"값\": 1.414616}}\n2026-11-03T09:57:43.144970Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: \"Bearer resource_metadata=\\\"https://mcp.fal.ai/.well-known/oauth-protected-resource/mcp\\\"\" })\ncodex\n<<<JSON {\"claims\":[{\"text\":\"조사는 7개 문항에 92명이 응답했으며 응답률은 57.5%다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"기술 세미나·샘플 측정 지원은 7명에게 배정됐고 평균 효과는 -1.6%, 효과의 통계량은 -0.6이다.\",\"cite\":[\"n_assigned[tech_support]\",\"alpha[tech_support]\",\"alpha_t[tech_support]\"]},{\"text\":\"기술 세미나·샘플 측정 지원은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[tech_support,B02]\"]},{\"text\":\"연간 단가 계약은 22명에게 배정됐고 평균 효과는 -0.2%, 효과의 통계량은 -0.1이다.\",\"cite\":[\"n_assigned[annual_contract]\",\"alpha[annual_contract]\",\"alpha_t[annual_contract]\"]},{\"text\":\"연간 단가 계약은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[annual_contract,NIND03]\"]},{\"text\":\"납기 보장 옵션은 38명에게 배정됐고 평균 효과는 +0.5%, 효과의 통계량은 0.3이다.\",\"cite\":[\"n_assigned[lead_guarantee]\",\"alpha[lead_guarantee]\",\"alpha_t[lead_guarantee]\"]},{\"text\":\"납기 보장 옵션은 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"delta_t[lead_guarantee,NIND01]\"]},{\"text\":\"이번 분기에는 평균 효과가 +0.5%인 납기 보장 옵션을 우선 실행하고, -0.2%인 연간 단가 계약과 -1.6%인 기술 세미나·샘플 측정 지원은 보완 후 운영한다.\",\"cite\":[\"alpha[lead_guarantee]\",\"alpha[annual_contract]\",\"alpha[tech_support]\"]}]} JSON>>>\ntokens used\n5,968\n",
+   "rc": 0,
+   "sec": 14.1,
+   "claims": [
+    {
+     "text": "조사는 7개 문항에 92명이 응답했으며 응답률은 57.5%다.",
+     "cite": [
+      "n_q",
+      "n_resp",
+      "rr"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "기술 세미나·샘플 측정 지원은 7명에게 배정됐고 평균 효과는 -1.6%, 효과의 통계량은 -0.6이다.",
+     "cite": [
+      "n_assigned[tech_support]",
+      "alpha[tech_support]",
+      "alpha_t[tech_support]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "기술 세미나·샘플 측정 지원은 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[tech_support,B02]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "연간 단가 계약은 22명에게 배정됐고 평균 효과는 -0.2%, 효과의 통계량은 -0.1이다.",
+     "cite": [
+      "n_assigned[annual_contract]",
+      "alpha[annual_contract]",
+      "alpha_t[annual_contract]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "연간 단가 계약은 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[annual_contract,NIND03]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "납기 보장 옵션은 38명에게 배정됐고 평균 효과는 +0.5%, 효과의 통계량은 0.3이다.",
+     "cite": [
+      "n_assigned[lead_guarantee]",
+      "alpha[lead_guarantee]",
+      "alpha_t[lead_guarantee]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "납기 보장 옵션은 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "delta_t[lead_guarantee,NIND01]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "이번 분기에는 평균 효과가 +0.5%인 납기 보장 옵션을 우선 실행하고, -0.2%인 연간 단가 계약과 -1.6%인 기술 세미나·샘플 측정 지원은 보완 후 운영한다.",
+     "cite": [
+      "alpha[lead_guarantee]",
+      "alpha[annual_contract]",
+      "alpha[tech_support]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    }
+   ]
+  },
+  {
+   "segment": "b2c_instax",
+   "prompt": "너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2c_instax. 액션 이름: {\"film_sub\": \"필름 구독 할인\", \"gift_pack\": \"선물 패키지 캠페인\", \"preorder\": \"신모델 사전예약 혜택\", \"print_coupon\": \"인화 쿠폰\", \"goods_bundle\": \"포토카드 굿즈 번들\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"7\", \"값\": 7}, \"n_resp\": {\"표기\": \"838\", \"값\": 838}, \"rr\": {\"표기\": \"20.9%\", \"값\": 0.2095}, \"alpha[film_sub]\": {\"표기\": \"+3.3%\", \"값\": 0.032551}, \"alpha_t[film_sub]\": {\"표기\": \"11.4\", \"값\": 11.396702}, \"n_assigned[film_sub]\": {\"표기\": \"1908\", \"값\": 1908}, \"top_q[film_sub]\": {\"표기\": \"NINS01\", \"값\": \"NINS01\"}, \"top_q_text[film_sub]\": {\"표기\": \"필름 가격 때문에 촬영을 줄인 적이 있다\", \"값\": \"필름 가격 때문에 촬영을 줄인 적이 있다\"}, \"delta[film_sub,NINS01]\": {\"표기\": \"+3.6%\", \"값\": 0.035826}, \"delta_t[film_sub,NINS01]\": {\"표기\": \"3.6\", \"값\": 3.647565}, \"alpha[gift_pack]\": {\"표기\": \"+2.9%\", \"값\": 0.028704}, \"alpha_t[gift_pack]\": {\"표기\": \"3.8\", \"값\": 3.835648}, \"n_assigned[gift_pack]\": {\"표기\": \"187\", \"값\": 187}, \"top_q[gift_pack]\": {\"표기\": \"C05\", \"값\": \"C05\"}, \"top_q_text[gift_pack]\": {\"표기\": \"선물용으로 구매한 적이 있다\", \"값\": \"선물용으로 구매한 적이 있다\"}, \"delta[gift_pack,C05]\": {\"표기\": \"+2.1%\", \"값\": 0.021341}, \"delta_t[gift_pack,C05]\": {\"표기\": \"2.1\", \"값\": 2.063362}, \"alpha[preorder]\": {\"표기\": \"+1.0%\", \"값\": 0.009998}, \"alpha_t[preorder]\": {\"표기\": \"1.4\", \"값\": 1.356272}, \"n_assigned[preorder]\": {\"표기\": \"209\", \"값\": 209}, \"top_q[preorder]\": {\"표기\": \"C07\", \"값\": \"C07\"}, \"top_q_text[preorder]\": {\"표기\": \"신모델 소식에 관심이 있다\", \"값\": \"신모델 소식에 관심이 있다\"}, \"delta[preorder,C07]\": {\"표기\": \"+6.5%\", \"값\": 0.064567}, \"delta_t[preorder,C07]\": {\"표기\": \"6.3\", \"값\": 6.285779}, \"alpha[print_coupon]\": {\"표기\": \"+0.4%\", \"값\": 0.004348}, \"alpha_t[print_coupon]\": {\"표기\": \"0.6\", \"값\": 0.553444}, \"n_assigned[print_coupon]\": {\"표기\": \"239\", \"값\": 239}, \"top_q[print_coupon]\": {\"표기\": \"C05\", \"값\": \"C05\"}, \"top_q_text[print_coupon]\": {\"표기\": \"선물용으로 구매한 적이 있다\", \"값\": \"선물용으로 구매한 적이 있다\"}, \"delta[print_coupon,C05]\": {\"표기\": \"-2.5%\", \"값\": -0.024802}, \"delta_t[print_coupon,C05]\": {\"표기\": \"-2.0\", \"값\": -1.990854}, \"alpha[goods_bundle]\": {\"표기\": \"+2.7%\", \"값\": 0.027013}, \"alpha_t[goods_bundle]\": {\"표기\": \"3.5\", \"값\": 3.537818}, \"n_assigned[goods_bundle]\": {\"표기\": \"211\", \"값\": 211}, \"top_q[goods_bundle]\": {\"표기\": \"C04\", \"값\": \"C04\"}, \"top_q_text[goods_bundle]\": {\"표기\": \"사진 화질에 만족한다\", \"값\": \"사진 화질에 만족한다\"}, \"delta[goods_bundle,C04]\": {\"표기\": \"-5.7%\", \"값\": -0.056808}, \"delta_t[goods_bundle,C04]\": {\"표기\": \"-2.6\", \"값\": -2.560594}}",
+   "stdout": "<<<JSON {\"claims\":[{\"text\":\"이번 액션플랜은 7개 문항, 838명 응답, 응답률 20.9%를 근거로 수립한다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"필름 구독 할인은 평균 효과 +3.3%, 효과 통계량 11.4, 배정 규모 1908로 핵심 액션으로 운영하며, ‘필름 가격 때문에 촬영을 줄인 적이 있다’ 응답군의 추가 효과는 +3.6%, 통계량은 3.6이다.\",\"cite\":[\"alpha[film_sub]\",\"alpha_t[film_sub]\",\"n_assigned[film_sub]\",\"top_q_text[film_sub]\",\"delta[film_sub,NINS01]\",\"delta_t[film_sub,NINS01]\"]},{\"text\":\"선물 패키지 캠페인은 평균 효과 +2.9%, 효과 통계량 3.8, 배정 규모 187로 운영하되, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[gift_pack]\",\"alpha_t[gift_pack]\",\"n_assigned[gift_pack]\",\"delta_t[gift_pack,C05]\"]},{\"text\":\"신모델 사전예약 혜택은 평균 효과 +1.0%, 효과 통계량 1.4, 배정 규모 209이며, ‘신모델 소식에 관심이 있다’ 응답군의 추가 효과 +6.5%, 통계량 6.3을 활용해 타기팅한다.\",\"cite\":[\"alpha[preorder]\",\"alpha_t[preorder]\",\"n_assigned[preorder]\",\"top_q_text[preorder]\",\"delta[preorder,C07]\",\"delta_t[preorder,C07]\"]},{\"text\":\"인화 쿠폰은 평균 효과 +0.4%, 효과 통계량 0.6, 배정 규모 239로 제한적으로 운영하며, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[print_coupon]\",\"alpha_t[print_coupon]\",\"n_assigned[print_coupon]\",\"delta_t[print_coupon,C05]\"]},{\"text\":\"포토카드 굿즈 번들은 평균 효과 +2.7%, 효과 통계량 3.5, 배정 규모 211로 보조 성장 액션에 배치하되, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[goods_bundle]\",\"alpha_t[goods_bundle]\",\"n_assigned[goods_bundle]\",\"delta_t[goods_bundle,C04]\"]},{\"text\":\"예산과 실행 역량은 필름 구독 할인에 우선 배정하고, 선물 패키지 캠페인과 포토카드 굿즈 번들을 후속 확장 축으로 활용한다.\",\"cite\":[\"alpha[film_sub]\",\"alpha_t[film_sub]\",\"alpha[gift_pack]\",\"alpha_t[gift_pack]\",\"alpha[goods_bundle]\",\"alpha_t[goods_bundle]\"]}]} JSON>>>\n",
+   "stderr_head": "Reading additional input from stdin...\nOpenAI Codex v0.156.1\n--------\nworkdir: /tmp/qloop_codex_0tws9xl7\nmodel: gpt-5.6-sol\nprovider: openai\napproval: never\nsandbox: read-only\nreasoning effort: high\nreasoning summaries: none\nsession id: 01a1a0d8-0f7a-71d0-93dc-08fbb686c154\n--------\nuser\n너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n세그먼트: b2c_instax. 액션 이름: {\"film_sub\": \"필름 구독 할인\", \"gift_pack\": \"선물 패키지 캠페인\", \"preorder\": \"신모델 사전예약 혜택\", \"print_coupon\": \"인화 쿠폰\", \"goods_bundle\": \"포토카드 굿즈 번들\"}\n아래 숫자표만 근거로 한국어 문장 6~10개를 써라. 규칙:\n1) 문장 속 숫자는 반드시 숫자표의 '표기' 문자열을 그대로 쓴다(자릿수·부호·% 그대로).\n2) 숫자표에 없는 숫자(날짜, 개수, 비율, 분기 번호 등)는 절대 쓰지 않는다.\n3) top_q_text 문항을 근거로 말할 때는 그 액션의 delta_t 절댓값이 3 이상일 때만 쓰고, 미만이면 '근거 문항 없음 — 평균 효과로 배정'이라고 쓴다.\n4) 문장마다 쓴 숫자표 키를 cite 에 모두 나열한다. '1표준편차' 라는 표현은 써도 된다.\n출력은 아래 형식 하나만, 마커 사이에 JSON 으로:\n<<<JSON {\"claims\":[{\"text\":\"...\",\"cite\":[\"키1\",\"키2\"]}]} JSON>>>\n숫자표: {\"n_q\": {\"표기\": \"7\", \"값\": 7}, \"n_resp\": {\"표기\": \"838\", \"값\": 838}, \"rr\": {\"표기\": \"20.9%\", \"값\": 0.2095}, \"alpha[film_sub]\": {\"표기\": \"+3.3%\", \"값\": 0.032551}, \"alpha_t[film_sub]\": {\"표기\": \"11.4\", \"값\": 11.396702}, \"n_assigned[film_sub]\": {\"표기\": \"1908\", \"값\": 1908}, \"top_q[film_sub]\": {\"표기\": \"NINS01\", \"값\": \"NINS01\"}, \"top_q_text[film_sub]\": {\"표기\": \"필름 가격 때문에 촬영을 줄인 적이 있다\", \"값\": \"필름 가격 때문에 촬영을 줄인 적이 있다\"}, \"delta[film_sub,NINS01]\": {\"표기\": \"+3.6%\", \"값\": 0.035826}, \"delta_t[film_sub,NINS01]\": {\"표기\": \"3.6\", \"값\": 3.647565}, \"alpha[gift_pack]\": {\"표기\": \"+2.9%\", \"값\": 0.028704}, \"alpha_t[gift_pack]\": {\"표기\": \"3.8\", \"값\"",
+   "stderr_tail": "1341}, \"delta_t[gift_pack,C05]\": {\"표기\": \"2.1\", \"값\": 2.063362}, \"alpha[preorder]\": {\"표기\": \"+1.0%\", \"값\": 0.009998}, \"alpha_t[preorder]\": {\"표기\": \"1.4\", \"값\": 1.356272}, \"n_assigned[preorder]\": {\"표기\": \"209\", \"값\": 209}, \"top_q[preorder]\": {\"표기\": \"C07\", \"값\": \"C07\"}, \"top_q_text[preorder]\": {\"표기\": \"신모델 소식에 관심이 있다\", \"값\": \"신모델 소식에 관심이 있다\"}, \"delta[preorder,C07]\": {\"표기\": \"+6.5%\", \"값\": 0.064567}, \"delta_t[preorder,C07]\": {\"표기\": \"6.3\", \"값\": 6.285779}, \"alpha[print_coupon]\": {\"표기\": \"+0.4%\", \"값\": 0.004348}, \"alpha_t[print_coupon]\": {\"표기\": \"0.6\", \"값\": 0.553444}, \"n_assigned[print_coupon]\": {\"표기\": \"239\", \"값\": 239}, \"top_q[print_coupon]\": {\"표기\": \"C05\", \"값\": \"C05\"}, \"top_q_text[print_coupon]\": {\"표기\": \"선물용으로 구매한 적이 있다\", \"값\": \"선물용으로 구매한 적이 있다\"}, \"delta[print_coupon,C05]\": {\"표기\": \"-2.5%\", \"값\": -0.024802}, \"delta_t[print_coupon,C05]\": {\"표기\": \"-2.0\", \"값\": -1.990854}, \"alpha[goods_bundle]\": {\"표기\": \"+2.7%\", \"값\": 0.027013}, \"alpha_t[goods_bundle]\": {\"표기\": \"3.5\", \"값\": 3.537818}, \"n_assigned[goods_bundle]\": {\"표기\": \"211\", \"값\": 211}, \"top_q[goods_bundle]\": {\"표기\": \"C04\", \"값\": \"C04\"}, \"top_q_text[goods_bundle]\": {\"표기\": \"사진 화질에 만족한다\", \"값\": \"사진 화질에 만족한다\"}, \"delta[goods_bundle,C04]\": {\"표기\": \"-5.7%\", \"값\": -0.056808}, \"delta_t[goods_bundle,C04]\": {\"표기\": \"-2.6\", \"값\": -2.560594}}\n2026-11-03T09:57:57.223893Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: \"Bearer resource_metadata=\\\"https://mcp.fal.ai/.well-known/oauth-protected-resource/mcp\\\"\" })\ncodex\n<<<JSON {\"claims\":[{\"text\":\"이번 액션플랜은 7개 문항, 838명 응답, 응답률 20.9%를 근거로 수립한다.\",\"cite\":[\"n_q\",\"n_resp\",\"rr\"]},{\"text\":\"필름 구독 할인은 평균 효과 +3.3%, 효과 통계량 11.4, 배정 규모 1908로 핵심 액션으로 운영하며, ‘필름 가격 때문에 촬영을 줄인 적이 있다’ 응답군의 추가 효과는 +3.6%, 통계량은 3.6이다.\",\"cite\":[\"alpha[film_sub]\",\"alpha_t[film_sub]\",\"n_assigned[film_sub]\",\"top_q_text[film_sub]\",\"delta[film_sub,NINS01]\",\"delta_t[film_sub,NINS01]\"]},{\"text\":\"선물 패키지 캠페인은 평균 효과 +2.9%, 효과 통계량 3.8, 배정 규모 187로 운영하되, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[gift_pack]\",\"alpha_t[gift_pack]\",\"n_assigned[gift_pack]\",\"delta_t[gift_pack,C05]\"]},{\"text\":\"신모델 사전예약 혜택은 평균 효과 +1.0%, 효과 통계량 1.4, 배정 규모 209이며, ‘신모델 소식에 관심이 있다’ 응답군의 추가 효과 +6.5%, 통계량 6.3을 활용해 타기팅한다.\",\"cite\":[\"alpha[preorder]\",\"alpha_t[preorder]\",\"n_assigned[preorder]\",\"top_q_text[preorder]\",\"delta[preorder,C07]\",\"delta_t[preorder,C07]\"]},{\"text\":\"인화 쿠폰은 평균 효과 +0.4%, 효과 통계량 0.6, 배정 규모 239로 제한적으로 운영하며, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[print_coupon]\",\"alpha_t[print_coupon]\",\"n_assigned[print_coupon]\",\"delta_t[print_coupon,C05]\"]},{\"text\":\"포토카드 굿즈 번들은 평균 효과 +2.7%, 효과 통계량 3.5, 배정 규모 211로 보조 성장 액션에 배치하되, 근거 문항 없음 — 평균 효과로 배정.\",\"cite\":[\"alpha[goods_bundle]\",\"alpha_t[goods_bundle]\",\"n_assigned[goods_bundle]\",\"delta_t[goods_bundle,C04]\"]},{\"text\":\"예산과 실행 역량은 필름 구독 할인에 우선 배정하고, 선물 패키지 캠페인과 포토카드 굿즈 번들을 후속 확장 축으로 활용한다.\",\"cite\":[\"alpha[film_sub]\",\"alpha_t[film_sub]\",\"alpha[gift_pack]\",\"alpha_t[gift_pack]\",\"alpha[goods_bundle]\",\"alpha_t[goods_bundle]\"]}]} JSON>>>\ntokens used\n3,564\n",
+   "rc": 0,
+   "sec": 14.6,
+   "claims": [
+    {
+     "text": "이번 액션플랜은 7개 문항, 838명 응답, 응답률 20.9%를 근거로 수립한다.",
+     "cite": [
+      "n_q",
+      "n_resp",
+      "rr"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "필름 구독 할인은 평균 효과 +3.3%, 효과 통계량 11.4, 배정 규모 1908로 핵심 액션으로 운영하며, ‘필름 가격 때문에 촬영을 줄인 적이 있다’ 응답군의 추가 효과는 +3.6%, 통계량은 3.6이다.",
+     "cite": [
+      "alpha[film_sub]",
+      "alpha_t[film_sub]",
+      "n_assigned[film_sub]",
+      "top_q_text[film_sub]",
+      "delta[film_sub,NINS01]",
+      "delta_t[film_sub,NINS01]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "선물 패키지 캠페인은 평균 효과 +2.9%, 효과 통계량 3.8, 배정 규모 187로 운영하되, 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "alpha[gift_pack]",
+      "alpha_t[gift_pack]",
+      "n_assigned[gift_pack]",
+      "delta_t[gift_pack,C05]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "신모델 사전예약 혜택은 평균 효과 +1.0%, 효과 통계량 1.4, 배정 규모 209이며, ‘신모델 소식에 관심이 있다’ 응답군의 추가 효과 +6.5%, 통계량 6.3을 활용해 타기팅한다.",
+     "cite": [
+      "alpha[preorder]",
+      "alpha_t[preorder]",
+      "n_assigned[preorder]",
+      "top_q_text[preorder]",
+      "delta[preorder,C07]",
+      "delta_t[preorder,C07]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": true
+    },
+    {
+     "text": "인화 쿠폰은 평균 효과 +0.4%, 효과 통계량 0.6, 배정 규모 239로 제한적으로 운영하며, 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "alpha[print_coupon]",
+      "alpha_t[print_coupon]",
+      "n_assigned[print_coupon]",
+      "delta_t[print_coupon,C05]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "포토카드 굿즈 번들은 평균 효과 +2.7%, 효과 통계량 3.5, 배정 규모 211로 보조 성장 액션에 배치하되, 근거 문항 없음 — 평균 효과로 배정.",
+     "cite": [
+      "alpha[goods_bundle]",
+      "alpha_t[goods_bundle]",
+      "n_assigned[goods_bundle]",
+      "delta_t[goods_bundle,C04]"
+     ],
+     "pass": true,
+     "why": "ok",
+     "pass_v1": false
+    },
+    {
+     "text": "예산과 실행 역량은 필름 구독 할인에 우선 배정하고, 선물 패키지 캠페인과 포토카드 굿즈 번들을 후속 확장 축으로 활용한다.",
+     "cite": [
+      "alpha[film_sub]",
+      "alpha_t[film_sub]",
+      "alpha[gift_pack]",
+      "alpha_t[gift_pack]",
+      "alpha[goods_bundle]",
+      "alpha_t[goods_bundle]"
+     ],
+     "pass": false,
+     "why": "alpha[film_sub] 값 불일치(표: +3.3%)",
+     "pass_v1": false
+    }
+   ]
+  }
+ ],
+ "t2_coding": {
+  "prompt": "도구나 명령을 쓰지 말고 바로 답하라. 아래는 한국후지필름 고객(사진관 파트너·산업재 고객·인스탁스 회원)의 개방형 설문 응답이다. 각 응답에 가장 맞는 주제 하나를 이 목록에서 고르고, 해당 없으면 '없음': [\"가격·마진\", \"교육·사용법\", \"굿즈·포토카드\", \"기술지원·사양\", \"납기\", \"배송\", \"서비스·AS\", \"선물\", \"신모델\", \"신사업·신상품\", \"앱·온라인몰\", \"인화\", \"재고·결품\", \"필름가격\"]\n출력은 마커 사이 JSON 하나: <<<JSON {\"labels\":{\"r000\":\"주제\",...}} JSON>>>\nr000|인화지가 자주 떨어져서 손님을 돌려보낸 적이 있어요\nr001|재고가 부족할 때 주문하면 너무 늦게 와요\nr002|필름 결품 때문에 주말 장사를 놓쳤습니다\nr003|물량 확보가 제일 어렵네요\nr004|주문 넣으면 일주일 넘게 걸려요\nr005|성수기에 소모품이 바닥나요\nr006|결품이 잦아요\nr007|재고 관리가 힘듭니다\nr008|급하게 필요할 때 받을 방법이 없어요\nr009|새 장비 조작법을 잘 모르겠어요\nr010|직원 교육이 필요합니다\nr011|사용법 설명을 다시 듣고 싶어요\nr012|신규 프린터 세팅이 어렵습니다\nr013|알바생이 기계를 다루기 어려워해요\nr014|보정 소프트웨어를 제대로 못 써요\nr015|교육 자료가 있으면 좋겠어요\nr016|기능이 많은데 활용을 못 해요\nr017|공급가가 너무 올랐어요\nr018|마진이 거의 안 남습니다\nr019|가격 경쟁이 심해서 남는 게 없어요\nr020|단가 인하가 필요합니다\nr021|매입가 부담이 큽니다\nr022|요즘 남는 게 별로 없네요\nr023|할인 지원이 있으면 좋겠어요\nr024|포토카드 같은 새 서비스를 해보고 싶어요\nr025|셀피 부스 들이는 것 관심 있습니다\nr026|신규 상품을 들여보고 싶어요\nr027|요즘 젊은 손님용 상품이 필요해요\nr028|네컷 사진기 도입 문의드려요\nr029|새로운 매출원이 필요합니다\nr030|기술 사양 문의에 답이 늦어요\nr031|측정 결과 해석을 도와줄 엔지니어가 필요합니다\nr032|적용 사례 자료가 부족해요\nr033|샘플 테스트를 해보고 싶습니다\nr034|기술 지원이 아쉬워요\nr035|우리 공정에 맞는지 검증하고 싶어요\nr036|단가가 경쟁사보다 높아요\nr037|연간 계약하면 할인되나요\nr038|가격 부담이 있습니다\nr039|예산 맞추기가 어려워요\nr040|구매 단가를 낮추고 싶어요\nr041|납기가 들쭉날쭉해요\nr042|입고 일정이 늦어서 라인이 멈춘 적 있어요\nr043|납기 지연이 제일 문제입니다\nr044|급한 발주 대응이 안 돼요\nr045|리드타임이 너무 깁니다\nr046|언제 들어오는지 알 수가 없어요\nr047|필름값이 너무 비싸요\nr048|필름 가격 때문에 자주 못 찍어요\nr049|카메라보다 필름이 부담이에요\nr050|한 장에 천 원 넘는 게 아까워요\nr051|필름 할인 좀 해주세요\nr052|찍고 싶은데 아껴 쓰게 돼요\nr053|필름 정기구매 혜택 있으면 좋겠어요\nr054|소모품 비용이 커요\nr055|친구 생일 선물로 샀어요\nr056|선물 포장이 있으면 좋겠어요\nr057|기념일 선물용으로 좋아요\nr058|선물 세트가 더 다양했으면\nr059|선물하기 좋은 구성이 필요해요\nr060|신모델 나오면 바로 사고 싶어요\nr061|새 기종 정보가 궁금해요\nr062|업그레이드할 만한 모델이 있나요\nr063|신제품 출시 알림 받고 싶어요\nr064|더 좋은 모델로 바꾸고 싶어요\nr065|폰 사진도 인화하고 싶어요\nr066|인화 서비스 가격이 궁금해요\nr067|사진을 뽑아서 앨범 만들고 싶어요\nr068|인화 쿠폰 있으면 쓸 것 같아요\nr069|가까운 데서 인화하고 싶어요\nr070|포토카드 만들고 싶어요\nr071|아이돌 포토카드처럼 굿즈로 만들고 싶어요\nr072|굿즈 제작 서비스 있나요\nr073|포카 꾸미기 세트가 있었으면\nr074|야구장 포토카드 너무 좋았어요\nr075|사진으로 굿즈 만들기 관심 있어요\nr076|특별히 없습니다\nr077|만족합니다\nr078|잘 쓰고 있어요\nr079|없음\nr080|그냥 그래요\nr081|포장이 깔끔했으면 좋겠어요\nr082|앱이 조금 느려요\nr083|매장 직원분이 친절했어요\nr084|배송이 조금 늦었어요\nr085|광고를 더 했으면\nr086|ㅎㅎ 좋아요",
+  "stdout": "<<<JSON {\"labels\":{\"r000\":\"재고·결품\",\"r001\":\"재고·결품\",\"r002\":\"재고·결품\",\"r003\":\"재고·결품\",\"r004\":\"재고·결품\",\"r005\":\"재고·결품\",\"r006\":\"재고·결품\",\"r007\":\"재고·결품\",\"r008\":\"재고·결품\",\"r009\":\"교육·사용법\",\"r010\":\"교육·사용법\",\"r011\":\"교육·사용법\",\"r012\":\"교육·사용법\",\"r013\":\"교육·사용법\",\"r014\":\"교육·사용법\",\"r015\":\"교육·사용법\",\"r016\":\"교육·사용법\",\"r017\":\"가격·마진\",\"r018\":\"가격·마진\",\"r019\":\"가격·마진\",\"r020\":\"가격·마진\",\"r021\":\"가격·마진\",\"r022\":\"가격·마진\",\"r023\":\"가격·마진\",\"r024\":\"신사업·신상품\",\"r025\":\"신사업·신상품\",\"r026\":\"신사업·신상품\",\"r027\":\"신사업·신상품\",\"r028\":\"신사업·신상품\",\"r029\":\"신사업·신상품\",\"r030\":\"기술지원·사양\",\"r031\":\"기술지원·사양\",\"r032\":\"기술지원·사양\",\"r033\":\"기술지원·사양\",\"r034\":\"기술지원·사양\",\"r035\":\"기술지원·사양\",\"r036\":\"가격·마진\",\"r037\":\"가격·마진\",\"r038\":\"가격·마진\",\"r039\":\"가격·마진\",\"r040\":\"가격·마진\",\"r041\":\"납기\",\"r042\":\"납기\",\"r043\":\"납기\",\"r044\":\"납기\",\"r045\":\"납기\",\"r046\":\"납기\",\"r047\":\"필름가격\",\"r048\":\"필름가격\",\"r049\":\"필름가격\",\"r050\":\"필름가격\",\"r051\":\"필름가격\",\"r052\":\"필름가격\",\"r053\":\"필름가격\",\"r054\":\"필름가격\",\"r055\":\"선물\",\"r056\":\"선물\",\"r057\":\"선물\",\"r058\":\"선물\",\"r059\":\"선물\",\"r060\":\"신모델\",\"r061\":\"신모델\",\"r062\":\"신모델\",\"r063\":\"신모델\",\"r064\":\"신모델\",\"r065\":\"인화\",\"r066\":\"인화\",\"r067\":\"인화\",\"r068\":\"인화\",\"r069\":\"인화\",\"r070\":\"굿즈·포토카드\",\"r071\":\"굿즈·포토카드\",\"r072\":\"굿즈·포토카드\",\"r073\":\"굿즈·포토카드\",\"r074\":\"굿즈·포토카드\",\"r075\":\"굿즈·포토카드\",\"r076\":\"없음\",\"r077\":\"없음\",\"r078\":\"없음\",\"r079\":\"없음\",\"r080\":\"없음\",\"r081\":\"없음\",\"r082\":\"앱·온라인몰\",\"r083\":\"서비스·AS\",\"r084\":\"배송\",\"r085\":\"없음\",\"r086\":\"없음\"}} JSON>>>\n",
+  "stderr_head": "Reading additional input from stdin...\nOpenAI Codex v0.156.1\n--------\nworkdir: /tmp/qloop_codex_xup0ysp8\nmodel: gpt-5.6-sol\nprovider: openai\napproval: never\nsandbox: read-only\nreasoning effort: high\nreasoning summaries: none\nsession id: 01a1a0d8-4874-7931-96cb-ee7802dc2230\n--------\nuser\n도구나 명령을 쓰지 말고 바로 답하라. 아래는 한국후지필름 고객(사진관 파트너·산업재 고객·인스탁스 회원)의 개방형 설문 응답이다. 각 응답에 가장 맞는 주제 하나를 이 목록에서 고르고, 해당 없으면 '없음': [\"가격·마진\", \"교육·사용법\", \"굿즈·포토카드\", \"기술지원·사양\", \"납기\", \"배송\", \"서비스·AS\", \"선물\", \"신모델\", \"신사업·신상품\", \"앱·온라인몰\", \"인화\", \"재고·결품\", \"필름가격\"]\n출력은 마커 사이 JSON 하나: <<<JSON {\"labels\":{\"r000\":\"주제\",...}} JSON>>>\nr000|인화지가 자주 떨어져서 손님을 돌려보낸 적이 있어요\nr001|재고가 부족할 때 주문하면 너무 늦게 와요\nr002|필름 결품 때문에 주말 장사를 놓쳤습니다\nr003|물량 확보가 제일 어렵네요\nr004|주문 넣으면 일주일 넘게 걸려요\nr005|성수기에 소모품이 바닥나요\nr006|결품이 잦아요\nr007|재고 관리가 힘듭니다\nr008|급하게 필요할 때 받을 방법이 없어요\nr009|새 장비 조작법을 잘 모르겠어요\nr010|직원 교육이 필요합니다\nr011|사용법 설명을 다시 듣고 싶어요\nr012|신규 프린터 세팅이 어렵습니다\nr013|알바생이 기계를 다루기 어려워해요\nr014|보정 소프트웨어를 제대로 못 써요\nr015|교육 자료가 있으면 좋겠어요\nr016|기능이 많은데 활용을 못 해요\nr017|공급가가 너무 올랐어요\nr018|마진이 거의 안 남습니다\nr019|가격 경쟁이 심해서 남는 게 없어요\nr020|단가 인하가 필요합니다\nr021|매입가 부담이 큽니다\nr022|요즘 남는 게 별로 없네요\nr023|할인 지원이 있으면 좋겠어요\nr024|포토카드 같은 새 서비스를 해보고 싶어요\nr025|셀피 부스 들이는 것 관심 있습니다\nr026|신규 상품을 들여보고 싶어요\nr027|요즘 젊은 손님용 상품이 필요해요\nr028|네컷 사진기 도입 문의드려요\nr029|새로운 매출원이 필요합니다\nr030|기술 사양 문의에 답이 늦어요\nr031|측정 결과 해석을 도와줄 엔지니어가 필요합니다\nr032|적용 사례 자료가 부족해요\nr033|샘플 테스트를 해보고 싶습니다\nr034|기술 지원이 아쉬워요\nr035|우리 공정에 맞는지 검증하고 싶어요\nr036|단가가 경쟁사보다 높아요\nr037|연간 계약하면 할인되나요\nr038|가격 부담이 있습니다\nr039|예산 맞추기가 어려워요\nr040|구매 단가를 낮추고 싶어요\nr041|납기가 들쭉날쭉해요",
+  "stderr_tail": "이 많은데 활용을 못 해요\nr017|공급가가 너무 올랐어요\nr018|마진이 거의 안 남습니다\nr019|가격 경쟁이 심해서 남는 게 없어요\nr020|단가 인하가 필요합니다\nr021|매입가 부담이 큽니다\nr022|요즘 남는 게 별로 없네요\nr023|할인 지원이 있으면 좋겠어요\nr024|포토카드 같은 새 서비스를 해보고 싶어요\nr025|셀피 부스 들이는 것 관심 있습니다\nr026|신규 상품을 들여보고 싶어요\nr027|요즘 젊은 손님용 상품이 필요해요\nr028|네컷 사진기 도입 문의드려요\nr029|새로운 매출원이 필요합니다\nr030|기술 사양 문의에 답이 늦어요\nr031|측정 결과 해석을 도와줄 엔지니어가 필요합니다\nr032|적용 사례 자료가 부족해요\nr033|샘플 테스트를 해보고 싶습니다\nr034|기술 지원이 아쉬워요\nr035|우리 공정에 맞는지 검증하고 싶어요\nr036|단가가 경쟁사보다 높아요\nr037|연간 계약하면 할인되나요\nr038|가격 부담이 있습니다\nr039|예산 맞추기가 어려워요\nr040|구매 단가를 낮추고 싶어요\nr041|납기가 들쭉날쭉해요\nr042|입고 일정이 늦어서 라인이 멈춘 적 있어요\nr043|납기 지연이 제일 문제입니다\nr044|급한 발주 대응이 안 돼요\nr045|리드타임이 너무 깁니다\nr046|언제 들어오는지 알 수가 없어요\nr047|필름값이 너무 비싸요\nr048|필름 가격 때문에 자주 못 찍어요\nr049|카메라보다 필름이 부담이에요\nr050|한 장에 천 원 넘는 게 아까워요\nr051|필름 할인 좀 해주세요\nr052|찍고 싶은데 아껴 쓰게 돼요\nr053|필름 정기구매 혜택 있으면 좋겠어요\nr054|소모품 비용이 커요\nr055|친구 생일 선물로 샀어요\nr056|선물 포장이 있으면 좋겠어요\nr057|기념일 선물용으로 좋아요\nr058|선물 세트가 더 다양했으면\nr059|선물하기 좋은 구성이 필요해요\nr060|신모델 나오면 바로 사고 싶어요\nr061|새 기종 정보가 궁금해요\nr062|업그레이드할 만한 모델이 있나요\nr063|신제품 출시 알림 받고 싶어요\nr064|더 좋은 모델로 바꾸고 싶어요\nr065|폰 사진도 인화하고 싶어요\nr066|인화 서비스 가격이 궁금해요\nr067|사진을 뽑아서 앨범 만들고 싶어요\nr068|인화 쿠폰 있으면 쓸 것 같아요\nr069|가까운 데서 인화하고 싶어요\nr070|포토카드 만들고 싶어요\nr071|아이돌 포토카드처럼 굿즈로 만들고 싶어요\nr072|굿즈 제작 서비스 있나요\nr073|포카 꾸미기 세트가 있었으면\nr074|야구장 포토카드 너무 좋았어요\nr075|사진으로 굿즈 만들기 관심 있어요\nr076|특별히 없습니다\nr077|만족합니다\nr078|잘 쓰고 있어요\nr079|없음\nr080|그냥 그래요\nr081|포장이 깔끔했으면 좋겠어요\nr082|앱이 조금 느려요\nr083|매장 직원분이 친절했어요\nr084|배송이 조금 늦었어요\nr085|광고를 더 했으면\nr086|ㅎㅎ 좋아요\n2026-11-03T09:58:11.665079Z ERROR rmcp::transport::worker: worker quit with fatal: Transport channel closed, when AuthRequired(AuthRequiredError { www_authenticate_header: \"Bearer resource_metadata=\\\"https://mcp.fal.ai/.well-known/oauth-protected-resource/mcp\\\"\" })\ncodex\n<<<JSON {\"labels\":{\"r000\":\"재고·결품\",\"r001\":\"재고·결품\",\"r002\":\"재고·결품\",\"r003\":\"재고·결품\",\"r004\":\"재고·결품\",\"r005\":\"재고·결품\",\"r006\":\"재고·결품\",\"r007\":\"재고·결품\",\"r008\":\"재고·결품\",\"r009\":\"교육·사용법\",\"r010\":\"교육·사용법\",\"r011\":\"교육·사용법\",\"r012\":\"교육·사용법\",\"r013\":\"교육·사용법\",\"r014\":\"교육·사용법\",\"r015\":\"교육·사용법\",\"r016\":\"교육·사용법\",\"r017\":\"가격·마진\",\"r018\":\"가격·마진\",\"r019\":\"가격·마진\",\"r020\":\"가격·마진\",\"r021\":\"가격·마진\",\"r022\":\"가격·마진\",\"r023\":\"가격·마진\",\"r024\":\"신사업·신상품\",\"r025\":\"신사업·신상품\",\"r026\":\"신사업·신상품\",\"r027\":\"신사업·신상품\",\"r028\":\"신사업·신상품\",\"r029\":\"신사업·신상품\",\"r030\":\"기술지원·사양\",\"r031\":\"기술지원·사양\",\"r032\":\"기술지원·사양\",\"r033\":\"기술지원·사양\",\"r034\":\"기술지원·사양\",\"r035\":\"기술지원·사양\",\"r036\":\"가격·마진\",\"r037\":\"가격·마진\",\"r038\":\"가격·마진\",\"r039\":\"가격·마진\",\"r040\":\"가격·마진\",\"r041\":\"납기\",\"r042\":\"납기\",\"r043\":\"납기\",\"r044\":\"납기\",\"r045\":\"납기\",\"r046\":\"납기\",\"r047\":\"필름가격\",\"r048\":\"필름가격\",\"r049\":\"필름가격\",\"r050\":\"필름가격\",\"r051\":\"필름가격\",\"r052\":\"필름가격\",\"r053\":\"필름가격\",\"r054\":\"필름가격\",\"r055\":\"선물\",\"r056\":\"선물\",\"r057\":\"선물\",\"r058\":\"선물\",\"r059\":\"선물\",\"r060\":\"신모델\",\"r061\":\"신모델\",\"r062\":\"신모델\",\"r063\":\"신모델\",\"r064\":\"신모델\",\"r065\":\"인화\",\"r066\":\"인화\",\"r067\":\"인화\",\"r068\":\"인화\",\"r069\":\"인화\",\"r070\":\"굿즈·포토카드\",\"r071\":\"굿즈·포토카드\",\"r072\":\"굿즈·포토카드\",\"r073\":\"굿즈·포토카드\",\"r074\":\"굿즈·포토카드\",\"r075\":\"굿즈·포토카드\",\"r076\":\"없음\",\"r077\":\"없음\",\"r078\":\"없음\",\"r079\":\"없음\",\"r080\":\"없음\",\"r081\":\"없음\",\"r082\":\"앱·온라인몰\",\"r083\":\"서비스·AS\",\"r084\":\"배송\",\"r085\":\"없음\",\"r086\":\"없음\"}} JSON>>>\ntokens used\n3,387\n",
+  "rc": 0,
+  "sec": 12.5,
+  "n": 87,
+  "lexicon_correct": 75,
+  "llm_correct": 84,
+  "llm_missing": 0,
+  "llm_wrong_examples": [
+   {
+    "text": "앱이 조금 느려요",
+    "truth": "없음",
+    "llm": "앱·온라인몰"
+   },
+   {
+    "text": "매장 직원분이 친절했어요",
+    "truth": "없음",
+    "llm": "서비스·AS"
+   },
+   {
+    "text": "배송이 조금 늦었어요",
+    "truth": "없음",
+    "llm": "배송"
+   }
+  ]
+ },
+ "summary": {
+  "plan_claims": 24,
+  "plan_pass": 23,
+  "plan_pass_v1": 14,
+  "plan_blocked": [
+   {
+    "text": "예산과 실행 역량은 필름 구독 할인에 우선 배정하고, 선물 패키지 캠페인과 포토카드 굿즈 번들을 후속 확장 축으로 활용한다.",
+    "cite": [
+     "alpha[film_sub]",
+     "alpha_t[film_sub]",
+     "alpha[gift_pack]",
+     "alpha_t[gift_pack]",
+     "alpha[goods_bundle]",
+     "alpha_t[goods_bundle]"
+    ],
+    "pass": false,
+    "why": "alpha[film_sub] 값 불일치(표: +3.3%)",
+    "pass_v1": false
+   }
+  ],
+  "coding_n": 87,
+  "coding_llm_correct": 84,
+  "coding_lexicon_correct": 75
+ }
+}
