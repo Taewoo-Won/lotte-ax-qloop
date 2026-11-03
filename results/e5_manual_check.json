@@ -1,0 +1,4 @@
+{"method": "문장마다 모델에게 보낸 프롬프트의 숫자표와 직접 대조(검증기와 별도). 막힌 문장은 근거 없음·순위 내용이 표와 맞는지도 확인.",
+ "seed0": {"checked": 24, "fabricated": 0, "v1_blocked_correct": 9, "note": "t값을 '효과 지표'라고 부른 이름 오류 4문장(숫자는 맞음)"},
+ "seed3": {"checked": 24, "fabricated": 0, "v2_blocked": 1, "v2_blocked_correct": 1, "note": "막힌 1개: 순위어 없는 우선순위 서술(필름 구독 할인 alpha 3.3%가 실제 최대)"},
+ "seed7": {"checked": 21, "fabricated": 0, "v2_blocked": 5, "v2_blocked_correct": 5, "note": "막힌 5개: '근거 없음'에 쓰지 않은 alpha 까지 인용 3(|t| 2.27·2.15·1.98), t값 인용 없이 '근거 없음' 2(|t| 1.73·2.62)"}}

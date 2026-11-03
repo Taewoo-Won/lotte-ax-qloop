@@ -14,6 +14,10 @@ E2 = json.loads((R / "e2_summary.json").read_text())
 E2D = json.loads((R / "e2_summary_decay0.json").read_text())
 E1 = json.loads((R / "e1_real_survey.json").read_text())
 E2C = json.loads((R / "e2_summary_constrained.json").read_text())
+E5 = json.loads((R / "e5_rescored.json").read_text())
+E5S = {sd: json.loads((R / f"e5_codex_live_seed{sd}.json").read_text()) for sd in (3, 7)
+       if (R / f"e5_codex_live_seed{sd}.json").exists()}
+E5M = json.loads((R / "e5_manual_check.json").read_text()) if (R / "e5_manual_check.json").exists() else {}
 E3 = json.loads((R / "e3_verifier.json").read_text())
 BANK = json.loads((R / "e2_bank_seed0.json").read_text())
 
@@ -157,6 +161,7 @@ def ledger_lines(seg, ops=("add_candidate", "promote", "kill"), n=6):
 
 def build():
     ct, pdiff = E2["capture_total"], E2["paired_diff"]
+    E5_TOTAL = E5["claims"] + sum(dd["summary"]["plan_claims"] for dd in E5S.values())
     seg_rows = "".join(
         f'<tr><td>{e(SEGLAB[s])}</td>' + "".join(f'<td class="num">{pct(E2["capture_by_segment"][k][s])}</td>' for k, _, _ in POL) + "</tr>"
         for s in ["b2b_photo", "b2b_industrial", "b2c_instax"])
@@ -165,7 +170,9 @@ def build():
         f'<tr><td>{e(SEGLAB[s])}</td><td class="num">{a["promotes_informative"]}/{a["promotes"]}</td>'
         f'<td class="num">{a["kills_informative"]}/{a["kills"]}</td></tr>' for s, a in aud.items())
     e3 = E3["perturbed"]
-    e3lab = {"shift": "숫자 크기 변경", "sign": "부호 뒤집기", "digit": "자릿수 바꾸기", "evidence": "근거 문항 바꿔치기", "extra": "인용 없는 숫자 끼워 넣기"}
+    e3lab = {"shift": "숫자 크기 변경", "sign": "부호 뒤집기", "digit": "자릿수 바꾸기", "evidence": "근거 문항 바꿔치기",
+             "extra": "인용 없는 숫자 끼워 넣기", "false_no_evidence": "근거가 뚜렷한데 '없음'이라고 쓰기(v2)",
+             "wrong_rank": "최댓값 아닌 액션을 '가장 높다'고 쓰기(v2)"}
     e3_rows = "".join(f'<tr><td>{e(e3lab[k])}</td><td class="num">{v["blocked"]}/{v["made"]}</td></tr>' for k, v in e3.items())
     b, p = E1["Business travel"], E1["Personal Travel"]
     hc = E2["per_round"]["qloop"]
@@ -205,7 +212,7 @@ td.num, th.num {{ text-align:right; font-variant-numeric:tabular-nums; }}
 .proj b {{ font-size:10.6pt; }}
 ul {{ margin:0 0 2mm; padding-left:4.5mm; }} li {{ margin-bottom:1mm; }}
 """
-    foot = lambda n: f'<div class="foot"><span>LOTTE AX Challenge 2026 · 과제7 한국후지필름 · Q-Loop</span><span>{n} / 6</span></div>'
+    foot = lambda n: f'<div class="foot"><span>LOTTE AX Challenge 2026 · 과제7 한국후지필름 · Q-Loop</span><span>{n} / 7</span></div>'
 
     p1 = f"""<section class="page">
 <div class="kick">LOTTE AX Challenge 2026 · 과제 7 · 한국후지필름</div>
@@ -219,8 +226,8 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
  <span>8분기 순이익 포착률(정답을 알 때의 최선 대비). Q-Loop vs 같은 학습기·문항 고정. 시드 {pdiff['n_seeds']}개 중 {d_fix['wins']}개 우위 · 심은 정답 시뮬레이션</span></div>
  <div><b>14→{b['k']}문항</b><i>시험 AUC {b['auc_full14']:.3f} → {b['auc_qloop']:.3f}</i>
  <span>실제 응답 {b['n_train']+b['n_test']+p['n_train']+p['n_test']:,}건(공개 항공 만족도 설문) 출장 고객 세그먼트. 개인 고객은 14→{p['k']}문항, AUC {p['auc_qloop']-p['auc_full14']:+.3f}</span></div>
- <div><b>{pct(E2['capture_by_segment']['fixed']['b2b_photo'])}→{pct(E2['capture_by_segment']['qloop']['b2b_photo'])}</b><i>사진관 파트너 · {E2['segment_paired']['b2b_photo']['wins']}/20 시드 우위</i>
- <span>문항 진화만의 기여(같은 학습기 대비). B2B 거래조건을 추첨하지 않는 현업 제약 버전에서도 합계 {E2C['paired_diff']['qloop_minus_fixed']['mean']*100:+.1f}%p</span></div>
+ <div><b>0 / {E5_TOTAL}</b><i>실제 OpenAI 모델이 지어낸 숫자</i>
+ <span>Codex CLI 로 받은 플랜 문장 {E5_TOTAL}개를 표와 대조. 이 출력으로 검증기가 맞는 문장을 막던 결함을 찾아 고쳤다(v2)</span></div>
 </div>
 <h3>무엇이 다른가</h3>
 <ul>
@@ -234,7 +241,7 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 <tr><td>사진관·인화점 파트너</td><td>"인화지가 자주 떨어져요" → 결품 빈도</td><td>자동 재고보충 계약</td></tr>
 <tr><td>산업재(LTO·프리스케일)</td><td>"납기가 들쭉날쭉해요" → 납기 지연 경험</td><td>납기 보장 옵션</td></tr>
 <tr><td>인스탁스·후지필름몰 회원</td><td>"필름값이 부담" / "포토카드 만들고 싶어요"</td><td>필름 구독 할인 / 사진상점F·야구장 포토카드 연계 번들</td></tr></table>
-<p class="note">재현: github.com/Taewoo-Won/lotte-ax-qloop — 사전등록(docs/PREREG.md), 실험 3종, 결과 JSON, 시험. 본 문서의 모든 수치는 results/ 파일에서 자동으로 읽어 넣었다.</p>
+<p class="note">재현: github.com/Taewoo-Won/lotte-ax-qloop — 사전등록(docs/PREREG.md), 실험 4종(실제 OpenAI 모델 출력 포함), 결과 JSON, 시험. 본 문서의 모든 수치는 results/ 파일에서 자동으로 읽어 넣었다.</p>
 {foot(1)}</section>"""
 
     p2 = f"""<section class="page">
@@ -254,7 +261,7 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 <tr><td>오케스트레이션</td><td>Agents SDK 0.24.0 · Responses API · Structured Outputs</td></tr>
 <tr><td>사람 승인</td><td><code>needs_approval=True</code> (발송·배포 도구)</td></tr>
 <tr><td>숫자 보증</td><td>출력 가드레일 = 검증기(하나라도 틀리면 차단)</td></tr>
-<tr><td>평가</td><td>자체 하네스 — Agent Builder 는 11-30 종료, 호스티드 Evals 는 10-31 읽기 전용·11-30 종료라 미사용</td></tr></table><p class="note">실제 OpenAI 모델 호출 기록은 아직 없다. 배선은 키 없이 구성과 가드레일 차단까지 시험했다.</p>
+<tr><td>평가</td><td>자체 하네스 — Agent Builder 는 11-30 종료, 호스티드 Evals 는 10-31 읽기 전용·11-30 종료라 미사용</td></tr></table><p class="note">배선은 키 없이 구성과 가드레일 차단까지 시험했다. 실제 모델 출력 시험은 서버의 Codex CLI(구독, 기본 모델 gpt-5.6-sol)로 했다 — 5쪽.</p>
 <h3>모델 배분 — 오류가 번지는가, 되돌릴 수 있는가</h3>
 <table><tr><th style="width:24mm">단계</th><th style="width:21mm">모델</th><th>이유</th></tr>
 <tr><td>개방형 1차 분류</td><td>gpt-6-luna</td><td>대량·되돌릴 수 있음(Decisions API 사용 가능 시 선택형). 사람 분류 200건과 κ 비교, 선행연구 zero-shot κ 0.76(GPT-4o, 독일어 설문 5,072건) 미달 시 상향</td></tr>
@@ -283,7 +290,7 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 
     sp = "".join(f'<tr><td>{e(x["label"])}</td><td>{e(" · ".join(x["selected"]))}</td></tr>' for x in [b, p])
     p4 = f"""<section class="page">
-<div class="kick">실증 2 · 실제 응답 / 실증 3 · 검증기</div><h2>실제 사람 응답에서도 정보를 잃지 않고 줄었다</h2>
+<div class="kick">실증 2 · 실제 응답 · 근거 표시 기준</div><h2>실제 사람 응답에서도 정보를 잃지 않고 줄었다</h2>
 <p>공개 항공 만족도 설문(학습 103,904명 · 시험 25,976명, 서비스 평가 14문항 + 만족 여부)을 출장 고객과 개인 여행 고객으로 나눠, 응답을 6개 물결로 흘리며 같은 절차(2회 연속 미달 폐기 · 중복 정리 · 상한)를 예측 기여도로 적용했다. 시험 데이터는 마지막에 한 번만 썼고, 비교 방식에는 Q-Loop 가 스스로 정한 문항 수를 그대로 줬다.</p>
 {fig_e1()}
 <div class="box"><b>남은 문항</b> — 출장: {e(" · ".join(b["selected"]))} / 개인: {e(" · ".join(p["selected"]))}<br><b>정직하게 읽기.</b> 결과 예측만 보면 단순 상관 상위 선택도 비슷했다(출장 {b['auc_top_corr']:.3f}, 개인 {p['auc_top_corr']:.3f}). 개인 고객에서는 '평균 점수 낮은 순'도 같은 문항을 골랐다. Q-Loop 의 차별점은 예측이 아니라 <b>액션 효과를 가르는 데</b> 있고, 그건 실증 1이 보여 준다. 이 실험이 보여 주는 것은 폐기 절차가 실제 응답에서 정보를 잃지 않는다는 점과, 고객군마다 남는 문항이 다르다는 점이다.</div>
@@ -291,12 +298,41 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 <table><tr><th>세그먼트(시드 20, 마지막 분기)</th><th class="num">최댓값 문항을 그대로 쓸 때</th><th class="num">|t|≥3 만 표시</th></tr>
 {''.join(f'<tr><td>{e(SEGLAB[k])}</td><td class="num">{v["all_top"]}</td><td class="num">{v["shown_t>=3"]}</td></tr>' for k, v in E3["evidence_accuracy"].items())}</table>
 <p class="note">'실제 니즈 문항'은 세계 정답으로 채점. 기준 미만이면 영업 화면에 "근거 문항 없음 — 평균 효과로 배정"으로 쓴다.</p>
-<h3>검증기 — 틀린 숫자 문장은 배포되지 않는다</h3>
-<div class="two"><div><table style="font-size:8.4pt"><tr><th>틀리게 바꾼 방식</th><th class="num">차단/생성</th></tr>{e3_rows}
-<tr><td><b>합계</b> · 맞는 문장 통과 {E3['original_passed']}/{E3['original_claims']}</td><td class="num"><b>{E3['perturbed_blocked']}/{E3['perturbed_total']}</b></td></tr></table></div>
-<div><p class="note">규칙: ①인용한 값마다 표에서 다시 꺼내 같은 형식으로 쓴 문자열이 문장에 그대로 있어야 한다 ②문장 속 숫자는 전부 인용에서 나와야 한다 ③인용한 근거 문항 문구가 표와 같아야 한다.</p>
-<p class="note">문장 생성기와 검증기를 같은 사람이 만들었으므로 기계적 보증 시험이다. 본선에서 OpenAI 모델이 쓴 문장으로 차단율을 다시 잰다. Agents SDK 출력 가드레일로 연결해 키 없이 구성 시험을 통과했다(qloop/agent_openai.py --build-only).</p></div></div>
 {foot(4)}</section>"""
+
+
+    def e5_row(name, n, v1, v2, fab, chk):
+        return (f'<tr><td>{name}</td><td class="num">{n}</td><td class="num">{v1}</td><td class="num"><b>{v2}</b></td>'
+                f'<td class="num">{fab}</td></tr>')
+    e5rows = e5_row("시드 0 — v2 를 고칠 때 본 출력", E5["claims"], E5["v1_pass"], E5["v2_pass"],
+                    E5M.get("seed0", {}).get("fabricated", "—"), "")
+    for sd, dd in E5S.items():
+        sm = dd["summary"]
+        e5rows += e5_row(f"시드 {sd} — v2 가 안 본 새 출력", sm["plan_claims"], sm["plan_pass_v1"], sm["plan_pass"],
+                         E5M.get(f"seed{sd}", {}).get("fabricated", "—"), "")
+    cod = E5["coding"]
+    cod_more = "".join(f' · 시드 {sd} 재실행 {dd["t2_coding"].get("llm_correct")}/{dd["t2_coding"].get("n")}' for sd, dd in E5S.items())
+    ex_noev = next(x["text"] for x in E5["rows"] if (not x["v1"]) and "근거 문항 없음" in x["text"])
+    ex_rank = next((x["text"] for x in E5["rows"] if (not x["v1"]) and "가장 높은" in x["text"]), "")
+    wrong = "".join(f'<tr><td>「{e(w["text"])}」</td><td>{e(w["truth"])}</td><td>{e(str(w["llm"]))}</td></tr>' for w in cod["llm_wrong_examples"][:5])
+    p4b = f"""<section class="page">
+<div class="kick">실증 3 · 실제 OpenAI 모델 출력 (서버의 Codex CLI {e(E5['codex_version'].replace('codex-cli ', ''))} · 기본 모델 gpt-5.6-sol · 2026-11-03)</div>
+<h2>실제 모델은 숫자를 지어내지 않았고, 틀린 건 검증기였다</h2>
+<p>에이전트가 쓰는 숫자표(인용 키 → 값)를 그대로 주고, 모델에게 액션플랜 문장과 인용 키를 쓰게 했다. 문장마다 검증기로 채점하고, 별도로 표와 직접 대조해 숫자를 지어낸 문장이 있는지 셌다.</p>
+<table><tr><th>출력 묶음</th><th class="num">문장</th><th class="num">검증기 v1 통과</th><th class="num">v2 통과</th><th class="num">숫자 지어냄(표 대조)</th></tr>{e5rows}</table>
+<div class="two"><div><h3>v1 이 막은 {E5['claims']-E5['v1_pass']}개 — 전부 맞는 문장</h3>
+<p class="note">v1 은 "인용한 숫자가 문장에 그대로 있어야 한다"는 한 가지 문장 유형만 알았다. 실제 모델은 다른 유형으로 썼다.</p>
+<ul><li><b>근거 없음 {E5['v1_blocked_types']['근거 없음(t값 인용·숫자 안 씀)']}개</b> — 「{e(ex_noev)}」 t값(기준 3 미만)을 근거로 인용하고 숫자는 안 씀</li>
+<li><b>순위 주장 {E5['v1_blocked_types']['순위 주장(숫자 안 씀)']}개</b> — 「{e(ex_rank[:60])}…」</li></ul>
+<p class="note"><b>v2 가 안 본 출력</b>: {sum(dd["summary"]["plan_claims"] for dd in E5S.values())}문장 중 {sum(dd["summary"]["plan_pass"] for dd in E5S.values())}개 통과. 막힌 {sum(dd["summary"]["plan_claims"]-dd["summary"]["plan_pass"] for dd in E5S.values())}개도 모두 맞는 문장이었다(순위어 없는 우선순위 1 · '근거 없음'에 쓰지 않은 평균 효과까지 인용 3 · t값 인용 없이 '근거 없음' 2). 지금은 막히면 배포 전체를 멈추고, 본선에서는 막힌 문장만 담당자 확인으로 넘긴다.</p>
+<p class="note"><b>v2</b>: 문장 유형별로 판정한다. 근거 없음 → 인용한 t값이 실제로 3 미만인가, 순위 → 그 액션이 실제 최댓값인가. 원본 검증기(qloop/verifier.py)를 고쳤고 Agents SDK 출력 가드레일도 같은 함수를 쓴다.</p></div>
+<div><h3>공격 시험 — v2 로 다시</h3>
+<table style="font-size:8.2pt"><tr><th>틀리게 바꾼 방식</th><th class="num">차단/생성</th></tr>{e3_rows}
+<tr><td><b>합계</b> · 맞는 문장 통과 {E3['original_passed']}/{E3['original_claims']}</td><td class="num"><b>{E3['perturbed_blocked']}/{E3['perturbed_total']}</b></td></tr></table></div></div>
+<h3>개방형 응답 분류 — 실제 모델 {cod['llm_correct']}/{cod['n']} · 사전 코더 {cod['lexicon_correct']}/{cod['n']}{cod_more}</h3>
+<table style="font-size:8.4pt"><tr><th>모델이 정답과 다르게 분류한 응답</th><th>시뮬레이션 정답</th><th>모델</th></tr>{wrong}</table>
+<p class="note"><b>정직하게 읽기.</b> 불일치 중 여럿은 정답 쪽이 애매하다(시뮬레이션이 '무관한 말'로 넣은 문장이 목록의 주제와 겹침). 응답 문장은 직접 만든 것이라 실제 고객 응답의 분류 정확도는 본선에서 사람 표본 κ 로 잰다. <b>검증기가 못 잡는 것:</b> 숫자에 붙인 이름 — 모델은 t값을 '효과 지표'라고 불렀다. 숫자는 맞아 통과했고, 이런 의미 오류는 사람 검토 몫으로 남긴다.</p>
+{foot(5)}</section>"""
 
     led = ledger_lines("b2c_instax", n=7)
     p5 = f"""<section class="page">
@@ -318,7 +354,7 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 </div>
 <h3>예시 — 시드 0 회원 세그먼트의 진화 원장(실행 기록 그대로)</h3>
 <table style="font-size:8.6pt"><tr><th style="width:14mm">시점</th><th style="width:20mm">변경</th><th style="width:62mm">문항</th><th>근거</th></tr>{led}</table>
-{foot(5)}</section>"""
+{foot(6)}</section>"""
 
     p6 = f"""<section class="page">
 <div class="kick">지원자의 AI 활용 이력</div><h2>스스로 검증하고 고치며 도는 루프를 만들어 왔다</h2>
@@ -334,10 +370,10 @@ Q-Loop 는 문항마다 <b>"누구에게 어떤 액션을 줄지 바꾸는가"</
 <h3>일하는 원칙 — 실패에서 나온 것</h3>
 <p>측정과 판정을 분리한다 · 불확실한 응답을 성공으로 읽지 않는다 · 모든 상수에 도출 근거, 없으면 지운다 · 문서의 안전장치가 코드에 실제로 있는지 확인한다 · 합계가 맞아도 구간별로 다시 맞춘다.</p>
 <p class="note">이 응모작도 같은 방식으로 만들었다: 지원자가 목표와 검증 원칙(실측 숫자만 · 비교 전 사전등록 · 정답 모듈 격리)을 정하고, AI 에이전트가 과제 분석·구현·실험·문안 초안을 맡고, 지원자가 검토해 제출한다.</p>
-{foot(6)}</section>"""
+{foot(7)}</section>"""
 
     doc = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Q-Loop 포트폴리오</title><style>{css}</style></head>
-<body>{p1}{p2}{p3}{p4}{p5}{p6}</body></html>"""
+<body>{p1}{p2}{p3}{p4}{p4b}{p5}{p6}</body></html>"""
     out = ROOT / "portfolio/portfolio.html"
     out.write_text(doc)
     pdf = ROOT / "portfolio/Q-Loop_portfolio.pdf"
