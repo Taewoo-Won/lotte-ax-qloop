@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from experiments.e2_sim_loop import run_one            # noqa: E402
 from qloop.report import build_tables, EVIDENCE_T       # noqa: E402
-from qloop.verifier import verify                       # noqa: E402
+from qloop.verifier import verify, verify_v1            # noqa: E402
 from qloop.coder import LexiconCoder, THEMES            # noqa: E402
 from qloop.world import TXT, IRRELEVANT                 # noqa: E402  (정답 채점용 — 하네스만 사용)
 
@@ -44,7 +44,8 @@ def codex(prompt: str, timeout: int = 420):
     t0 = time.time()
     p = subprocess.run([CODEX, "exec", "--skip-git-repo-check", "--sandbox", "read-only", prompt],
                        cwd=work, capture_output=True, text=True, timeout=timeout)
-    return {"stdout": p.stdout, "stderr_tail": p.stderr[-3000:], "rc": p.returncode, "sec": round(time.time() - t0, 1)}
+    return {"stdout": p.stdout, "stderr_head": p.stderr[:1500], "stderr_tail": p.stderr[-3000:], "rc": p.returncode,
+            "sec": round(time.time() - t0, 1)}
 
 
 def grab_json(out: str):
@@ -65,7 +66,8 @@ def t1_plans(agents):
     for seg, ag in agents.items():
         rd = ag.history[-1]
         T = build_tables(ag, rd)
-        table = {k: {"표기": fmt_of(k).format(v), "값": v if not isinstance(v, float) else round(v, 6)} for k, v in T.items()}
+        table = {k: {"표기": fmt_of(k).format(v), "값": v if not isinstance(v, float) else round(v, 6)} for k, v in T.items()
+                 if not k.startswith("label[")}
         labels = {a: ag.action_label[a] for a in ag.actions}
         prompt = (
             "너는 한국후지필름 영업·마케팅 담당자에게 이번 분기 액션플랜을 쓰는 에이전트다. 도구나 명령을 쓰지 말고 바로 답하라.\n"
@@ -87,7 +89,8 @@ def t1_plans(agents):
             for c in claims:
                 cl = {"text": c["text"], "cite": [(k, fmt_of(k)) for k in c.get("cite", [])]}
                 ok, why = verify(cl, T)
-                res.append({"text": c["text"], "cite": c.get("cite", []), "pass": ok, "why": why})
+                ok1, _ = verify_v1(cl, T)
+                res.append({"text": c["text"], "cite": c.get("cite", []), "pass": ok, "why": why, "pass_v1": ok1})
             rec["claims"] = res
         except Exception as ex:  # 파싱 실패도 기록
             rec["parse_error"] = repr(ex)[:300]
@@ -127,27 +130,31 @@ def t2_coding():
 
 
 def main():
+    seed = int(sys.argv[1]) if len(sys.argv) > 1 else 0
     started = datetime.now(timezone.utc).isoformat()
-    _, agents = run_one(0, "qloop", 8, None)
+    _, agents = run_one(seed, "qloop", 8, None)
     t1 = t1_plans(agents)
     t2 = t2_coding()
     allc = [c for r in t1 for c in r.get("claims", [])]
     res = {
         "started_utc": started, "finished_utc": datetime.now(timezone.utc).isoformat(),
         "codex_version": subprocess.run([CODEX, "--version"], capture_output=True, text=True).stdout.strip(),
-        "model_line": model_line(t1[0]["stderr_tail"], t1[0]["stdout"]) if t1 else "",
+        "seed": seed, "verifier": "v2",
+        "model_line": model_line(t1[0]["stderr_head"], t1[0]["stdout"]) if t1 else "",
         "t1_plans": t1, "t2_coding": t2,
         "summary": {
             "plan_claims": len(allc), "plan_pass": sum(c["pass"] for c in allc),
+            "plan_pass_v1": sum(c["pass_v1"] for c in allc),
             "plan_blocked": [c for c in allc if not c["pass"]][:6],
             "coding_n": t2.get("n"), "coding_llm_correct": t2.get("llm_correct"),
             "coding_lexicon_correct": t2.get("lexicon_correct"),
         },
     }
-    (ROOT / "results/e5_codex_live.json").write_text(json.dumps(res, ensure_ascii=False, indent=1))
+    name = "results/e5_codex_live.json" if seed == 0 else f"results/e5_codex_live_seed{seed}.json"
+    (ROOT / name).write_text(json.dumps(res, ensure_ascii=False, indent=1))
     s = res["summary"]
     print("E5 요약 |", res["codex_version"], "|", res["model_line"])
-    print(f"T1 플랜 문장 {s['plan_claims']}개 중 검증 통과 {s['plan_pass']}개")
+    print(f"시드 {seed} | T1 플랜 문장 {s['plan_claims']}개 중 검증 v2 통과 {s['plan_pass']}개 (v1 {s['plan_pass_v1']}개)")
     for c in s["plan_blocked"][:3]:
         print(" 차단:", c["text"][:60], "→", c["why"][:40])
     print(f"T2 분류 {s['coding_n']}건: LLM 정답 {s['coding_llm_correct']} / 사전 코더 {s['coding_lexicon_correct']}")

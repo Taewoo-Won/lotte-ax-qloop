@@ -9,8 +9,7 @@ from __future__ import annotations
 import numpy as np
 
 from .analyst import RoundData
-
-EVIDENCE_T = 3.0
+from .verifier import EVIDENCE_T          # 근거 표시 기준은 검증기와 한 곳에서 정한다
 
 
 def build_tables(agent, rd: RoundData) -> dict:
@@ -22,6 +21,7 @@ def build_tables(agent, rd: RoundData) -> dict:
     T["rr"] = len(rd.resp) / agent.n
     assign = rd.assign
     for a in agent.actions:
+        T[f"label[{a}]"] = agent.action_label[a]
         T[f"alpha[{a}]"] = fit.alpha[a]
         T[f"alpha_t[{a}]"] = fit.alpha_t[a]
         T[f"n_assigned[{a}]"] = sum(1 for x in assign if x == a)
@@ -55,7 +55,8 @@ def build_claims(agent, rd: RoundData, T: dict) -> list[dict]:
                 "cite": [(f"top_q_text[{a}]", "{}"), (f"delta[{a},{q}]", "{:+.1%}"), (f"delta_t[{a},{q}]", "{:.1f}")],
             })
         else:
-            claims.append({"text": f"'{lab}'은(는) 근거 문항 없음 — 평균 효과로 배정.", "cite": []})
+            claims.append({"text": f"'{lab}'은(는) 근거 문항 없음 — 평균 효과로 배정.",
+                           "cite": [(f"delta_t[{a},{q}]", "{:.1f}")]})
         claims.append({
             "text": f"이번 회차 '{lab}' 배정 {T[f'n_assigned[{a}]']}곳.",
             "cite": [(f"n_assigned[{a}]", "{:d}")],

@@ -15,8 +15,10 @@
  },
  "evidence_seeds": 20,
  "verifier_seeds": 10,
- "original_claims": 390,
- "original_passed": 390,
+ "verifier_version": "v2",
+ "original_claims": 420,
+ "original_passed": 420,
+ "correct_rank_claims": "30/30",
  "perturbed": {
   "shift": {
    "made": 306,
@@ -37,8 +39,16 @@
   "extra": {
    "made": 390,
    "blocked": 390
+  },
+  "false_no_evidence": {
+   "made": 37,
+   "blocked": 37
+  },
+  "wrong_rank": {
+   "made": 90,
+   "blocked": 90
   }
  },
- "perturbed_total": 1196,
- "perturbed_blocked": 1196
+ "perturbed_total": 1323,
+ "perturbed_blocked": 1323
 }

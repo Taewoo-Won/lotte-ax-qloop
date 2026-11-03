@@ -1,0 +1,356 @@
+{
+ "source": "results/e5_codex_live.json",
+ "codex_version": "codex-cli 0.156.1",
+ "run_utc": [
+  "2026-11-03T09:41:06.644539+00:00",
+  "2026-11-03T09:42:04.777102+00:00"
+ ],
+ "claims": 24,
+ "v1_pass": 15,
+ "v2_pass": 24,
+ "v1_blocked_types": {
+  "근거 없음(t값 인용·숫자 안 씀)": 8,
+  "순위 주장(숫자 안 씀)": 1
+ },
+ "coding": {
+  "n": 87,
+  "llm_correct": 82,
+  "lexicon_correct": 75,
+  "llm_missing": 0,
+  "llm_wrong_examples": [
+   {
+    "text": "주문 넣으면 일주일 넘게 걸려요",
+    "truth": "재고·결품",
+    "llm": "납기"
+   },
+   {
+    "text": "급하게 필요할 때 받을 방법이 없어요",
+    "truth": "재고·결품",
+    "llm": "배송"
+   },
+   {
+    "text": "앱이 조금 느려요",
+    "truth": "없음",
+    "llm": "앱·온라인몰"
+   },
+   {
+    "text": "매장 직원분이 친절했어요",
+    "truth": "없음",
+    "llm": "서비스·AS"
+   },
+   {
+    "text": "배송이 조금 늦었어요",
+    "truth": "없음",
+    "llm": "배송"
+   }
+  ]
+ },
+ "rows": [
+  {
+   "segment": "b2b_photo",
+   "text": "총 8개 문항에 266명이 응답해 응답률은 66.5%였다.",
+   "cite": [
+    "n_q",
+    "n_resp",
+    "rr"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "자동 재고보충 계약은 평균 효과 +4.0%, 효과 지표 3.5를 기준으로 116곳에 배정한다.",
+   "cite": [
+    "alpha[restock]",
+    "alpha_t[restock]",
+    "n_assigned[restock]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "자동 재고보충 계약은 근거 문항 없음 — 평균 효과로 배정.",
+   "cite": [
+    "delta_t[restock,A03]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[restock,A03] 값 불일치(표: 2.4)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "운영 교육 방문은 평균 효과 +0.9%, 효과 지표 0.4를 기준으로 20곳에 배정한다.",
+   "cite": [
+    "alpha[visit_train]",
+    "alpha_t[visit_train]",
+    "n_assigned[visit_train]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "운영 교육 방문은 근거 문항 없음 — 평균 효과로 배정.",
+   "cite": [
+    "delta_t[visit_train,A06]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[visit_train,A06] 값 불일치(표: 1.9)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "볼륨 리베이트는 평균 효과 +3.2%, 효과 지표 2.5를 기준으로 167곳에 배정한다.",
+   "cite": [
+    "alpha[rebate]",
+    "alpha_t[rebate]",
+    "n_assigned[rebate]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "볼륨 리베이트는 근거 문항 없음 — 평균 효과로 배정.",
+   "cite": [
+    "delta_t[rebate,A03]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[rebate,A03] 값 불일치(표: 1.7)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "신사업 키트 시연은 평균 효과 +0.1%, 효과 지표 0.1을 기준으로 45곳에 배정한다.",
+   "cite": [
+    "alpha[newbiz_kit]",
+    "alpha_t[newbiz_kit]",
+    "n_assigned[newbiz_kit]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_photo",
+   "text": "신사업 키트 시연은 근거 문항 없음 — 평균 효과로 배정.",
+   "cite": [
+    "delta_t[newbiz_kit,A10]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[newbiz_kit,A10] 값 불일치(표: -1.8)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "설문은 7개 문항에 90명이 응답했고 응답률은 56.2%였다.",
+   "cite": [
+    "n_q",
+    "n_resp",
+    "rr"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "기술 세미나·샘플 측정 지원은 53명에게 배정하며 평균 효과는 +1.7%, 효과 통계량은 0.9다.",
+   "cite": [
+    "n_assigned[tech_support]",
+    "alpha[tech_support]",
+    "alpha_t[tech_support]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "기술 세미나·샘플 측정 지원은 근거 문항 없음 — 평균 효과로 배정한다.",
+   "cite": [
+    "delta_t[tech_support,B02]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[tech_support,B02] 값 불일치(표: -2.1)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "연간 단가 계약은 21명에게 배정하며 평균 효과는 -1.2%, 효과 통계량은 -0.5다.",
+   "cite": [
+    "n_assigned[annual_contract]",
+    "alpha[annual_contract]",
+    "alpha_t[annual_contract]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "연간 단가 계약은 근거 문항 없음 — 평균 효과로 배정한다.",
+   "cite": [
+    "delta_t[annual_contract,B07]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[annual_contract,B07] 값 불일치(표: -1.7)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "납기 보장 옵션은 12명에게 배정하며 평균 효과는 +0.8%, 효과 통계량은 0.2다.",
+   "cite": [
+    "n_assigned[lead_guarantee]",
+    "alpha[lead_guarantee]",
+    "alpha_t[lead_guarantee]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "납기 보장 옵션은 근거 문항 없음 — 평균 효과로 배정한다.",
+   "cite": [
+    "delta_t[lead_guarantee,B01]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[lead_guarantee,B01] 값 불일치(표: 2.2)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2b_industrial",
+   "text": "평균 효과를 기준으로 기술 세미나·샘플 측정 지원 +1.7%, 납기 보장 옵션 +0.8%, 연간 단가 계약 -1.2% 순으로 실행 우선순위를 둔다.",
+   "cite": [
+    "alpha[tech_support]",
+    "alpha[lead_guarantee]",
+    "alpha[annual_contract]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "설문은 7개 문항에 845명이 응답했으며 응답률은 21.1%다.",
+   "cite": [
+    "n_q",
+    "n_resp",
+    "rr"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "필름 구독 할인은 평균 효과 +2.9%를 바탕으로 1843명에게 배정하고, ‘필름 가격 때문에 촬영을 줄인 적이 있다’ 문항에서 +4.9%, delta_t 4.9로 나타난 수요를 집중 공략한다.",
+   "cite": [
+    "alpha[film_sub]",
+    "n_assigned[film_sub]",
+    "top_q_text[film_sub]",
+    "delta[film_sub,NINS01]",
+    "delta_t[film_sub,NINS01]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "선물 패키지 캠페인은 평균 효과 +2.6%를 바탕으로 239명에게 배정하고, ‘선물용으로 구매한 적이 있다’ 문항에서 +3.8%, delta_t 3.9로 나타난 고객을 핵심 타깃으로 삼는다.",
+   "cite": [
+    "alpha[gift_pack]",
+    "n_assigned[gift_pack]",
+    "top_q_text[gift_pack]",
+    "delta[gift_pack,C05]",
+    "delta_t[gift_pack,C05]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "신모델 사전예약 혜택은 평균 효과 +0.6%를 감안해 214명에게 배정하되, ‘신모델 소식에 관심이 있다’ 문항에서 +6.0%, delta_t 6.1로 확인된 관심 고객에게 집중한다.",
+   "cite": [
+    "alpha[preorder]",
+    "n_assigned[preorder]",
+    "top_q_text[preorder]",
+    "delta[preorder,C07]",
+    "delta_t[preorder,C07]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "인화 쿠폰은 평균 효과 +0.9%를 기준으로 104명에게 배정한다; 근거 문항 없음 — 평균 효과로 배정.",
+   "cite": [
+    "alpha[print_coupon]",
+    "n_assigned[print_coupon]",
+    "delta_t[print_coupon,C05]"
+   ],
+   "v1": false,
+   "v1_why": "delta_t[print_coupon,C05] 값 불일치(표: 1.9)",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "포토카드 굿즈 번들은 평균 효과 +2.7%를 바탕으로 244명에게 배정하고, ‘사진으로 포토카드·굿즈를 만들어 보고 싶다’ 문항에서 +3.5%, delta_t 3.5로 나타난 제작 의향을 구매 전환으로 연결한다.",
+   "cite": [
+    "alpha[goods_bundle]",
+    "n_assigned[goods_bundle]",
+    "top_q_text[goods_bundle]",
+    "delta[goods_bundle,NINS02]",
+    "delta_t[goods_bundle,NINS02]"
+   ],
+   "v1": true,
+   "v1_why": "ok",
+   "v2": true,
+   "v2_why": "ok"
+  },
+  {
+   "segment": "b2c_instax",
+   "text": "실행 우선순위는 평균 효과가 가장 높은 필름 구독 할인을 중심으로 두고, 포토카드 굿즈 번들과 선물 패키지 캠페인을 함께 강화한다.",
+   "cite": [
+    "alpha[film_sub]",
+    "alpha[goods_bundle]",
+    "alpha[gift_pack]"
+   ],
+   "v1": false,
+   "v1_why": "alpha[film_sub] 값 불일치(표: +2.9%)",
+   "v2": true,
+   "v2_why": "ok"
+  }
+ ]
+}

@@ -63,7 +63,9 @@ def perturb(claim: dict, T: dict, kind: str, rng, bank_texts: list[str]):
 
 def main():
     rng = np.random.default_rng(7)
-    originals, results = [], {k: {"made": 0, "blocked": 0} for k in ["shift", "sign", "digit", "evidence", "extra"]}
+    originals, results = [], {k: {"made": 0, "blocked": 0} for k in ["shift", "sign", "digit", "evidence", "extra",
+                                                                     "false_no_evidence", "wrong_rank"]}
+    rank_ok = []
     sample_md = None
     ev = {}                      # 근거 문항 정확도: 보여 준 근거 문항이 그 액션이 듣는 니즈를 재는 문항인가(세계 정답으로 채점)
     for seed in range(20):
@@ -87,13 +89,30 @@ def main():
             for c in claims:
                 ok, why = verify(c, T)
                 originals.append(ok)
-                for kind in results:
+                for kind in ["shift", "sign", "digit", "evidence", "extra"]:
                     bad = perturb(c, T, kind, rng, bank_texts)
                     if bad is None or bad == c["text"]:
                         continue
                     results[kind]["made"] += 1
                     ok2, _ = verify({"text": bad, "cite": c["cite"]}, T)
                     results[kind]["blocked"] += int(not ok2)
+            # v2 문장 유형 공격: 근거가 뚜렷한데 '근거 문항 없음'이라고 쓰기 / 평균 효과 최대가 아닌 액션을 '가장 높다'고 쓰기
+            alphas = {a: T[f"alpha[{a}]"] for a in ag.actions}
+            top = max(alphas, key=alphas.get)
+            for a in ag.actions:
+                q = T[f"top_q[{a}]"]
+                lab = T[f"label[{a}]"]
+                if abs(T[f"delta_t[{a},{q}]"]) >= EVIDENCE_T:
+                    results["false_no_evidence"]["made"] += 1
+                    c2 = {"text": f"'{lab}'은(는) 근거 문항 없음 — 평균 효과로 배정.", "cite": [(f"delta_t[{a},{q}]", "{:.1f}")]}
+                    results["false_no_evidence"]["blocked"] += int(not verify(c2, T)[0])
+                c3 = {"text": f"평균 효과가 가장 높은 '{lab}'을(를) 중심으로 운영한다.",
+                      "cite": [(f"alpha[{x}]", "{:+.1%}") for x in ag.actions]}
+                if a == top:
+                    rank_ok.append(verify(c3, T)[0])
+                else:
+                    results["wrong_rank"]["made"] += 1
+                    results["wrong_rank"]["blocked"] += int(not verify(c3, T)[0])
             if seed == 0:
                 passed = [c for c in claims if verify(c, T)[0]]
                 sample_md = (sample_md or "# 예시 액션플랜 (시드 0, 마지막 회차, 템플릿 문장 + 검증 통과분)\n\n") + \
@@ -102,7 +121,9 @@ def main():
         "evidence_accuracy": {seg: {"all_top": f"{v['all'][0]}/{v['all'][1]}", "shown_t>=3": f"{v['shown'][0]}/{v['shown'][1]}"}
                               for seg, v in ev.items()},
         "evidence_seeds": 20, "verifier_seeds": 10,
-        "original_claims": len(originals), "original_passed": int(sum(originals)),
+        "verifier_version": "v2",
+        "original_claims": len(originals) + len(rank_ok), "original_passed": int(sum(originals) + sum(rank_ok)),
+        "correct_rank_claims": f"{sum(rank_ok)}/{len(rank_ok)}",
         "perturbed": results,
         "perturbed_total": int(sum(v["made"] for v in results.values())),
         "perturbed_blocked": int(sum(v["blocked"] for v in results.values())),
